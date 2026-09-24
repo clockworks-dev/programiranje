@@ -1,0 +1,960 @@
+<!DOCTYPE html>
+<html lang="hr">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Digitalni kutak - Tehničar za računarstvo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet">
+
+  <link rel="stylesheet" href="extra.css">
+  <style>
+    :root {
+      --bg: #f8f8ff;
+      --surface: rgba(255, 255, 255, 0.72);
+      --surface-strong: rgba(255, 255, 255, 0.9);
+      --text: #202b36;
+      --muted: #7d6078;
+      --line: rgba(57, 43, 89, 0.12);
+      --primary: #5d3b06;
+      --primary-2: #dec348;
+      --accent: #ffbf69;
+      --success: #2a8f7b;
+      --shadow: 0 24px 60px rgba(117, 66, 113, 0.16);
+      --radius-xl: 30px;
+      --radius-lg: 22px;
+      --radius-md: 16px;
+      --space: clamp(16px, 2vw, 24px);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: 'Manrope', sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 15% 20%, rgba(79, 141, 217, 0.18), transparent 24%),
+        radial-gradient(circle at 85% 15%, rgba(126, 107, 232, 0.2), transparent 20%),
+        radial-gradient(circle at 75% 80%, rgba(173, 105, 255, 0.18), transparent 18%),
+        linear-gradient(180deg, #5d3b06 0%, #dec348 45%, #c5a936 100%);
+      overflow-x: hidden;
+    }
+
+    .grain,
+    .glow {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .grain {
+      opacity: 0.08;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180' viewBox='0 0 180 180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)' opacity='0.45'/%3E%3C/svg%3E");
+    }
+
+    .glow {
+      background: radial-gradient(circle at 50% 30%, rgba(255, 255, 255, 0.45), transparent 45%);
+    }
+
+    .page {
+      position: relative;
+      z-index: 1;
+      width: min(1180px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 24px 0 48px;
+    }
+
+    .hero {
+      position: relative;
+      overflow: hidden;
+      padding: clamp(28px, 4vw, 52px);
+      border: 1px solid var(--line);
+      border-radius: 36px;
+      background: linear-gradient(135deg, rgba(197, 255, 195, 0.82), rgba(112, 238, 255, 0.58));
+      backdrop-filter: blur(18px);
+      box-shadow: var(--shadow);
+      isolation: isolate;
+    }
+
+    .hero::before,
+    .hero::after {
+      content: "";
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(10px);
+      z-index: -1;
+    }
+
+    .hero::before {
+      width: 280px;
+      height: 280px;
+      top: -120px;
+      right: -60px;
+      background: rgba(100, 79, 217, 0.18);
+    }
+
+    .hero::after {
+      width: 220px;
+      height: 220px;
+      left: -70px;
+      bottom: -90px;
+      background: rgba(232, 107, 107, 0.15);
+    }
+
+    .hero-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-bottom: 22px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 16px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.84);
+      border: 1px solid rgba(217, 79, 145, 0.16);
+      color: var(--primary);
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      font-size: 0.82rem;
+    }
+
+    .theme-note {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--muted);
+      font-size: 0.95rem;
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.6);
+      border: 1px solid var(--line);
+    }
+
+    h1 {
+      margin: 0;
+      max-width: 11ch;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(3rem, 7vw, 5.8rem);
+      line-height: 0.92;
+      letter-spacing: -0.03em;
+    }
+
+    .lead {
+      margin: 18px 0 0;
+      max-width: 62ch;
+      color: var(--muted);
+      font-size: clamp(1.05rem, 1.8vw, 1.24rem);
+      line-height: 1.8;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 24px;
+      align-items: end;
+      margin-top: 28px;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .stat {
+      padding: 18px;
+      border-radius: 20px;
+      background: rgba(255, 255, 255, 0.72);
+      border: 1px solid rgba(89, 43, 82, 0.08);
+      box-shadow: 0 10px 24px rgba(117, 66, 113, 0.08);
+    }
+
+    .stat strong {
+      display: block;
+      font-size: 1.8rem;
+      margin-bottom: 6px;
+      color: var(--primary);
+    }
+
+    .stat span {
+      color: var(--muted);
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
+
+    .mini-card {
+      align-self: stretch;
+      padding: 22px;
+      border-radius: 28px;
+      background: linear-gradient(160deg, rgba(217, 79, 145, 0.12), rgba(143, 107, 232, 0.08));
+      border: 1px solid rgba(217, 79, 145, 0.12);
+    }
+
+    .mini-card h2 {
+      margin: 0 0 10px;
+      font-size: 1.15rem;
+    }
+
+    .mini-card p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    .section {
+      margin-top: 28px;
+    }
+
+    .section-head {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 18px;
+      flex-wrap: wrap;
+    }
+
+    .section-head h2 {
+      margin: 0;
+      font-size: clamp(1.5rem, 2vw, 2rem);
+    }
+
+    .section-head p {
+      margin: 0;
+      color: var(--muted);
+      max-width: 58ch;
+      line-height: 1.7;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 20px;
+    }
+
+    .card {
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      min-height: 320px;
+      padding: 24px;
+      border-radius: var(--radius-xl);
+      border: 1px solid var(--line);
+      background: var(--surface-strong);
+      backdrop-filter: blur(16px);
+      box-shadow: var(--shadow);
+      text-decoration: none;
+      color: inherit;
+      transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
+    }
+
+    .card:hover,
+    .card:focus-visible {
+      transform: translateY(-5px);
+      box-shadow: 0 28px 60px rgba(117, 66, 113, 0.2);
+      border-color: rgba(217, 79, 145, 0.28);
+    }
+
+    .card::before {
+      content: "";
+      position: absolute;
+      inset: auto -40px -60px auto;
+      width: 180px;
+      height: 180px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255, 255, 255, 0.9), transparent 68%);
+      opacity: 0.9;
+    }
+
+    .card--blue {
+      background: linear-gradient(145deg, rgba(255, 255, 255, 0.92), rgba(228, 245, 255, 0.92));
+    }
+
+    .card--pink {
+      background: linear-gradient(145deg, rgba(255, 255, 255, 0.92), rgba(255, 233, 245, 0.95));
+    }
+
+    .card--blue-dark {
+      background: linear-gradient(145deg, rgba(255, 255, 255, 0.92), rgba(0, 158, 249, 0.35));
+
+      &::before {
+        opacity: 0.5;
+      }
+    }
+
+    .card--red-dark {
+      background: linear-gradient(145deg, rgba(191, 33, 27, 0.35), rgba(226, 65, 51, 0.15));
+    }
+
+    .card--yellow {
+      background: linear-gradient(145deg, rgba(255, 255, 255, 0.92), rgba(243, 181, 60, .25));
+    }
+
+    .card--green {
+      background: linear-gradient(145deg, rgba(255, 255, 255, 0.92), rgba(62, 139, 135, 0.25));
+    }
+
+    .card-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 16px;
+    }
+
+    .icon-wrap {
+      width: 68px;
+      height: 68px;
+      border-radius: 22px;
+      display: grid;
+      place-items: center;
+      background: rgba(255, 255, 255, 0.78);
+      border: 1px solid rgba(89, 43, 82, 0.08);
+      box-shadow: 0 12px 28px rgba(117, 66, 113, 0.08);
+      flex-shrink: 0;
+    }
+
+    .tag {
+      padding: 9px 14px;
+      border-radius: 999px;
+      font-size: 0.82rem;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: white;
+      background: linear-gradient(120deg, var(--primary), var(--primary-2));
+      box-shadow: 0 12px 24px rgba(143, 107, 232, 0.22);
+    }
+
+    .card h3 {
+      margin: 22px 0 10px;
+      font-size: clamp(1.55rem, 2vw, 2rem);
+      line-height: 1.08;
+    }
+
+    .card p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.75;
+      max-width: 46ch;
+    }
+
+    .highlights {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .chip {
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.7);
+      border: 1px solid rgba(89, 43, 82, 0.08);
+      color: var(--text);
+      font-weight: 600;
+      font-size: 0.93rem;
+    }
+
+    .cta-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-top: auto;
+      padding-top: 28px;
+    }
+
+    .cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 20px;
+      border-radius: 999px;
+      background: var(--text);
+      color: #fff;
+      font-weight: 700;
+      text-decoration: none;
+      box-shadow: 0 14px 28px rgba(54, 32, 51, 0.18);
+    }
+
+    .meta {
+      color: var(--muted);
+      font-size: 0.92rem;
+      font-weight: 700;
+    }
+
+    .notes {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-top: 20px;
+    }
+
+    .note {
+      padding: 22px;
+      border-radius: 24px;
+      background: rgba(255, 255, 255, 0.76);
+      border: 1px solid var(--line);
+    }
+
+    .note h3 {
+      margin: 0 0 10px;
+      font-size: 1.08rem;
+    }
+
+    .note p,
+    .note li {
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    .note ul {
+      margin: 0;
+      padding-left: 18px;
+    }
+
+    footer {
+      margin-top: 24px;
+      padding: 18px 4px 4px;
+      color: var(--muted);
+      text-align: center;
+      font-size: 0.95rem;
+    }
+
+    .sparkles {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 700;
+      color: var(--success);
+    }
+
+    .skip-link {
+      position: absolute;
+      left: 12px;
+      top: -48px;
+      background: #fff;
+      color: var(--text);
+      padding: 10px 14px;
+      border-radius: 12px;
+      z-index: 10;
+    }
+
+    .skip-link:focus {
+      top: 12px;
+    }
+
+    @media (max-width: 900px) {
+
+      .hero-grid,
+      .cards,
+      .notes {
+        grid-template-columns: 1fr;
+      }
+
+      .stats {
+        grid-template-columns: 1fr;
+      }
+
+      h1 {
+        max-width: 100%;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .page {
+        width: min(100% - 18px, 1180px);
+        padding-top: 12px;
+      }
+
+      .hero,
+      .card,
+      .note {
+        border-radius: 24px;
+      }
+
+      .hero-top,
+      .section-head,
+      .cta-row,
+      .card-top {
+        align-items: flex-start;
+      }
+
+      .cta-row {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .cta {
+        justify-content: center;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html {
+        scroll-behavior: auto;
+      }
+
+      *,
+      *::before,
+      *::after {
+        animation: none !important;
+        transition: none !important;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <a class="skip-link" href="#sadrzaj">Preskoči na sadržaj</a>
+  <div class="grain"></div>
+  <div class="glow"></div>
+
+  <main class="page" id="sadrzaj">
+    <section class="hero" aria-labelledby="naslov-stranice">
+      <div class="hero-top">
+        <div class="badge">
+          <span>✦</span>
+          <span>2. razred · Tehničar za računarstvo</span>
+        </div>
+        <div class="theme-note">Digitalni materijali za učenje, ponavljanje i brzi pristup lekcijama</div>
+      </div>
+
+      <h1 id="naslov-stranice">Digitalni kutak</h1>
+      <p class="lead">
+        Ovdje se nalaze poveznice prema nastavnim materijalima koje možete otvoriti jednim klikom.
+        Stranica je osmišljena da vam olakša snalaženje, ponavljanje sadržaja i samostalno učenje kroz pregledne i
+        vizualno privlačne cjeline.
+      </p>
+
+      <div class="hero-grid">
+        <div class="stats" aria-label="Brzi pregled materijala">
+          <div class="stat">
+            <strong>1</strong>
+            <span>Nastavne cjeline spremne za otvaranje i rad.</span>
+          </div>
+          <div class="stat">
+            <strong>1 klik</strong>
+            <span>Do željenog sadržaja bez traženja po mapama.</span>
+          </div>
+          <div class="stat">
+            <strong>100%</strong>
+            <span>Fokus na jasne upute, sigurnost i preglednost.</span>
+          </div>
+        </div>
+
+        <aside class="mini-card" aria-label="Napomena za učenike">
+          <h2>Kako koristiti?</h2>
+          <p>
+            Najprije odaberite temu koja vas zanima. Zatim otvorite materijal, prođite slajdove i izdvojite ključne
+            pojmove koje trebate zapamtiti za nastavu, vježbu ili ponavljanje.
+          </p>
+        </aside>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="materijali">
+      <div class="section-head">
+        <div>
+          <h2 id="materijali">Nastavni materijali</h2>
+          <p>Odaberite karticu i otvorite pripremljeni sadržaj. Teme su prilagođene razumijevanju digitalnog svijeta i
+            njegovoj primjeni u budućem zanimanju tehničar za računarstvo.</p>
+        </div>
+        <div class="sparkles">● Uči jasno ● Kreći se brzo ● Istražuj samostalno</div>
+      </div>
+
+      <div class="cards">
+        <a class="card card--blue-dark" href="./osnove.html" target="_blank" rel="noopener noreferrer"
+          aria-label="Otvori materijal Osnovni pojmovi">
+          <div class="card-top">
+            <div class="icon-wrap" aria-hidden="true">
+              <svg viewBox="0 0 24 24" width="40px" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+                <g id="SVGRepo_iconCarrier">
+                  <path d="M17 15H14.5H12" stroke="#5d3b06" stroke-width="1.5" stroke-linecap="round"></path>
+                  <path
+                    d="M7 10L7.2344 10.1953C8.51608 11.2634 9.15693 11.7974 9.15693 12.5C9.15693 13.2026 8.51608 13.7366 7.2344 14.8047L7 15"
+                    stroke="#5d3b06" stroke-width="1.5" stroke-linecap="round"></path>
+                  <path
+                    d="M22 12C22 16.714 22 19.0711 20.5355 20.5355C19.0711 22 16.714 22 12 22C7.28595 22 4.92893 22 3.46447 20.5355C2 19.0711 2 16.714 2 12C2 7.28595 2 4.92893 3.46447 3.46447C4.92893 2 7.28595 2 12 2C16.714 2 19.0711 2 20.5355 3.46447C21.5093 4.43821 21.8356 5.80655 21.9449 8"
+                    stroke="#5d3b06" stroke-width="1.5" stroke-linecap="round"></path>
+                </g>
+              </svg>
+            </div>
+            <span class="tag">Tema 1</span>
+          </div>
+
+          <h3>Osnovni pojmovi</h3>
+          <p>
+            Osnovni pojmovi programskog jezika C++, uključujući tipove podataka, konstante, standardne biblioteke i
+            ključnu riječ auto. Naglašava važnost pravilnog odabira tipa podatka, korištenja const za nepromjenjive
+            vrijednosti te jasnog pisanja izraza uz poštovanje prioriteta operatora. Cilj je pisati čitljiv, točan i
+            sigurniji C++ kod koristeći dostupne alate standardne biblioteke.
+          </p>
+
+          <div class="highlights" aria-label="Ključne teme">
+            <span class="chip">Tipovi podataka</span>
+            <span class="chip">Konstante</span>
+            <span class="chip">Standardne biblioteke</span>
+            <span class="chip">Prioritet operatora</span>
+            <span class="chip">Ključna riječ auto</span>
+          </div>
+
+          <div class="cta-row">
+            <span class="cta">Otvori lekciju <span aria-hidden="true">→</span></span>
+            <span class="meta">Osnove sklopovlja računala</span>
+          </div>
+        </a>
+
+        <!-- <a class="card card--pink" href="./pretrazivaci.html" target="_blank" rel="noopener noreferrer"
+          aria-label="Otvori materijal Internetski pretraživači i društvene mreže u poslovanju">
+          <div class="card-top">
+            <div class="icon-wrap" aria-hidden="true">
+              <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#d94f91" stroke-width="1.8"
+                stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="11" cy="11" r="6"></circle>
+                <path d="m20 20-3.5-3.5"></path>
+                <path d="M8.5 11h5"></path>
+                <path d="M11 8.5v5"></path>
+              </svg>
+            </div>
+            <span class="tag">Tema 2</span>
+          </div>
+
+          <h3>Internetski pretraživači i društvene mreže</h3>
+          <p>
+            Ovaj materijal pokazuje kako tražiti informacije, procijeniti vjerodostojnost izvora i razumjeti digitalnu
+            prisutnost u poslovanju.
+            Posebno je koristan za zanimanje kozmetičara jer povezuje online komunikaciju, klijente i profesionalni
+            nastup.
+          </p>
+
+          <div class="highlights" aria-label="Ključne teme">
+            <span class="chip">Ključne riječi</span>
+            <span class="chip">Pouzdani izvori</span>
+            <span class="chip">Društvene mreže</span>
+            <span class="chip">Online reputacija</span>
+          </div>
+
+          <div class="cta-row">
+            <span class="cta">Otvori lekciju <span aria-hidden="true">→</span></span>
+            <span class="meta">Digitalne vještine za struku</span>
+          </div>
+        </a>
+
+        <a class="card card--blue-dark" href="./word.html" target="_blank" rel="noopener noreferrer"
+          aria-label="Otvori materijal Programi za oblikovanje i obradu teksta – MS Word">
+          <div class="card-top">
+            <div class="icon-wrap" aria-hidden="true">
+              <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+                fill="#000000" width="34">
+                <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+                <g id="SVGRepo_iconCarrier">
+                  <defs>
+                    <linearGradient id="a" x1="4.494" y1="-1712.086" x2="13.832" y2="-1695.914"
+                      gradientTransform="translate(0 1720)" gradientUnits="userSpaceOnUse">
+                      <stop offset="0" stop-color="#2368c4"></stop>
+                      <stop offset="0.5" stop-color="#1a5dbe"></stop>
+                      <stop offset="1" stop-color="#1146ac"></stop>
+                    </linearGradient>
+                  </defs>
+                  <title>file_type_word</title>
+                  <path
+                    d="M28.806,3H9.705A1.192,1.192,0,0,0,8.512,4.191h0V9.5l11.069,3.25L30,9.5V4.191A1.192,1.192,0,0,0,28.806,3Z"
+                    style="fill:#41a5ee"></path>
+                  <path d="M30,9.5H8.512V16l11.069,1.95L30,16Z" style="fill:#2b7cd3"></path>
+                  <path d="M8.512,16v6.5L18.93,23.8,30,22.5V16Z" style="fill:#185abd"></path>
+                  <path d="M9.705,29h19.1A1.192,1.192,0,0,0,30,27.809h0V22.5H8.512v5.309A1.192,1.192,0,0,0,9.705,29Z"
+                    style="fill:#103f91"></path>
+                  <path d="M16.434,8.2H8.512V24.45h7.922a1.2,1.2,0,0,0,1.194-1.191V9.391A1.2,1.2,0,0,0,16.434,8.2Z"
+                    style="opacity:0.10000000149011612;isolation:isolate"></path>
+                  <path d="M15.783,8.85H8.512V25.1h7.271a1.2,1.2,0,0,0,1.194-1.191V10.041A1.2,1.2,0,0,0,15.783,8.85Z"
+                    style="opacity:0.20000000298023224;isolation:isolate"></path>
+                  <path d="M15.783,8.85H8.512V23.8h7.271a1.2,1.2,0,0,0,1.194-1.191V10.041A1.2,1.2,0,0,0,15.783,8.85Z"
+                    style="opacity:0.20000000298023224;isolation:isolate"></path>
+                  <path d="M15.132,8.85H8.512V23.8h6.62a1.2,1.2,0,0,0,1.194-1.191V10.041A1.2,1.2,0,0,0,15.132,8.85Z"
+                    style="opacity:0.20000000298023224;isolation:isolate"></path>
+                  <path
+                    d="M3.194,8.85H15.132a1.193,1.193,0,0,1,1.194,1.191V21.959a1.193,1.193,0,0,1-1.194,1.191H3.194A1.192,1.192,0,0,1,2,21.959V10.041A1.192,1.192,0,0,1,3.194,8.85Z"
+                    style="fill:url(#a)"></path>
+                  <path
+                    d="M6.9,17.988c.023.184.039.344.046.481h.028c.01-.13.032-.287.065-.47s.062-.338.089-.465l1.255-5.407h1.624l1.3,5.326a7.761,7.761,0,0,1,.162,1h.022a7.6,7.6,0,0,1,.135-.975l1.039-5.358h1.477l-1.824,7.748H10.591L9.354,14.742q-.054-.222-.122-.578t-.084-.52H9.127q-.021.189-.084.561c-.042.249-.075.432-.1.552L7.78,19.871H6.024L4.19,12.127h1.5l1.131,5.418A4.469,4.469,0,0,1,6.9,17.988Z"
+                    style="fill:#fff"></path>
+                </g>
+              </svg>
+            </div>
+            <span class="tag">Tema 3</span>
+          </div>
+
+          <h3>Programi za oblikovanje i obradu teksta – MS Word</h3>
+          <p>
+            Materijal uvodi učenike u radno okruženje programa Microsoft Word te objašnjava kako izraditi,
+            urediti i oblikovati tekstualni dokument. Kroz primjere uče se pokretanje programa, rad sa
+            sučeljem, spremanje datoteka te osnovno oblikovanje teksta, odlomaka, stranice, tablica i slika.
+          </p>
+
+          <div class="highlights" aria-label="Ključne teme">
+            <span class="chip">Sučelje i kartice</span>
+            <span class="chip">Pisanje i oblikovanje teksta</span>
+            <span class="chip">Odlomci i stranica</span>
+            <span class="chip">Tablice i slike</span>
+          </div>
+
+          <div class="cta-row">
+            <span class="cta">Otvori lekciju <span aria-hidden="true">→</span></span>
+            <span class="meta">Osnove rada u MS Wordu</span>
+          </div>
+        </a>
+
+        <a class="card card--yellow" href="./vrste-komunikacije.html" target="_blank" rel="noopener noreferrer"
+          aria-label="Otvori materijal Vrste elektroničke komunikacije">
+          <div class="card-top">
+            <div class="icon-wrap" aria-hidden="true">
+              <svg fill="rgba(243, 181, 60, .55)" width="34px" height="34px" viewBox="0 0 64 64" version="1.1"
+                xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+                stroke="rgba(243, 181, 60, .55)" stroke-width="1.92">
+                <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+                <g id="SVGRepo_iconCarrier">
+                  <g id="smart_lamp"></g>
+                  <g id="e-wallet"></g>
+                  <g id="virtual_reality"></g>
+                  <g id="payment"></g>
+                  <g id="cloud_storage"></g>
+                  <g id="security_camera"></g>
+                  <g id="smart_home"></g>
+                  <g id="connection"></g>
+                  <g id="game"></g>
+                  <g id="drone"></g>
+                  <g id="smart_car"></g>
+                  <g id="camera"></g>
+                  <g id="online_business"></g>
+                  <g id="smartwatch"></g>
+                  <g id="online_shopping"></g>
+                  <g id="smart_Television"></g>
+                  <g id="security"></g>
+                  <g id="communication">
+                    <g>
+                      <path
+                        d="M35,30c2.2,0,4-1.8,4-4s-1.8-4-4-4c-2.2,0-4,1.8-4,4S32.8,30,35,30z M35,24c1.1,0,2,0.9,2,2s-0.9,2-2,2s-2-0.9-2-2 S33.9,24,35,24z">
+                      </path>
+                      <path
+                        d="M24,30c2.2,0,4-1.8,4-4s-1.8-4-4-4s-4,1.8-4,4S21.8,30,24,30z M24,24c1.1,0,2,0.9,2,2s-0.9,2-2,2s-2-0.9-2-2 S22.9,24,24,24z">
+                      </path>
+                      <path
+                        d="M13,22c-2.2,0-4,1.8-4,4s1.8,4,4,4s4-1.8,4-4S15.2,22,13,22z M13,28c-1.1,0-2-0.9-2-2s0.9-2,2-2s2,0.9,2,2S14.1,28,13,28z ">
+                      </path>
+                      <path
+                        d="M60.3,9.1c-0.4-0.1-0.8,0-1.1,0.3l-8.5,10.2C50,20.5,48.8,21,47.7,21H45v-6c0-3.3-2.7-6-6-6H9c-3.3,0-6,2.7-6,6v39 c0,0.4,0.3,0.8,0.7,0.9C3.8,55,3.9,55,4,55c0.3,0,0.6-0.1,0.8-0.4l8.5-10.2c0.8-0.9,1.9-1.4,3.1-1.4H19v6c0,3.3,2.7,6,6,6h30 c3.3,0,6-2.7,6-6V10C61,9.6,60.7,9.2,60.3,9.1z M11.7,43.2L5,51.2V15c0-2.2,1.8-4,4-4h30c2.2,0,4,1.8,4,4v22c0,2.2-1.8,4-4,4H16.3 C14.6,41,12.9,41.8,11.7,43.2z M59,49c0,2.2-1.8,4-4,4H25c-2.2,0-4-1.8-4-4v-6h18c3.3,0,6-2.7,6-6V23h2.7c1.8,0,3.5-0.8,4.6-2.2 l6.7-8.1V49z">
+                      </path>
+                      <path
+                        d="M47,38c0,2.2,1.8,4,4,4s4-1.8,4-4s-1.8-4-4-4S47,35.8,47,38z M53,38c0,1.1-0.9,2-2,2s-2-0.9-2-2s0.9-2,2-2S53,36.9,53,38z ">
+                      </path>
+                    </g>
+                  </g>
+                  <g id="remote_control"></g>
+                  <g id="satelite_dish"></g>
+                </g>
+              </svg>
+            </div>
+            <span class="tag">Tema 4</span>
+          </div>
+
+          <h3>Vrste elektroničke komunikacije</h3>
+          <p>
+            Materijal sadrži primjere pomoću kojih učenici upoznaju e-poštu, chat aplikacije, videopozive i alate
+            za timsku suradnju te razlikuju formalnu od neformalne komunikacije. Obrađuju se struktura poslovne
+            e-poruke, pravila poslovnog bontona, primjeren jezik i profesionalan ton u komunikaciji s klijentima i
+            suradnicima.
+          </p>
+
+          <div class="highlights" aria-label="Ključne teme">
+            <span class="chip">Eketronička komunikacija</span>
+            <span class="chip">Formalno / Neformalno</span>
+            <span class="chip">Pravila pisanja</span>
+            <span class="chip">Rizične poruke</span>
+          </div>
+
+          <div class="cta-row">
+            <span class="cta">Otvori lekciju <span aria-hidden="true">→</span></span>
+            <span class="meta">Komunikacija sa klijentima</span>
+          </div>
+        </a>
+
+        <a class="card card--red-dark" href="./posta.html" target="_blank" rel="noopener noreferrer"
+          aria-label="Otvori materijal Programi za oblikovanje i obradu teksta – MS Word">
+          <div class="card-top">
+            <div class="icon-wrap" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" width="34px" xmlns="http://www.w3.org/2000/svg">
+                <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+                <g id="SVGRepo_iconCarrier">
+                  <path d="M4 7.00005L10.2 11.65C11.2667 12.45 12.7333 12.45 13.8 11.65L20 7" stroke="#bf211b"
+                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                  <rect x="3" y="5" width="18" height="14" rx="2" stroke="#bf211b" stroke-width="2"
+                    stroke-linecap="round"></rect>
+                </g>
+              </svg>
+            </div>
+            <span class="tag">Tema 5</span>
+          </div>
+
+          <h3>Elektronička pošta u poslovanju</h3>
+          <p>
+            Materijal uvodi učenike u poslovnu uporabu elektroničke pošte u programu Gmail te objašnjava kako otvoriti,
+            konfigurirati i sigurno koristiti e-mail račun. Kroz praktične primjere učenici uče postaviti dvofaktorsku
+            autentifikaciju, organizirati dolaznu poštu pomoću oznaka i filtara, sigurno slati privitke i velike
+            datoteke putem Google Drive poveznica te pisati jasne i profesionalne poslovne poruke.
+          </p>
+
+          <div class="highlights" aria-label="Ključne teme">
+            <span class="chip">Račun i sigurnost</span>
+            <span class="chip">Oznake, filtri, pretraživanje</span>
+            <span class="chip">Poslovni odgovor</span>
+            <span class="chip">Automatizacija</span>
+          </div>
+
+          <div class="cta-row">
+            <span class="cta">Otvori lekciju <span aria-hidden="true">→</span></span>
+            <span class="meta">Osnove rada sa Gmailom</span>
+          </div>
+        </a>
+
+        <a class="card card--green" href="./excel.html" target="_blank" rel="noopener noreferrer"
+          aria-label="Otvori materijal Programi za oblikovanje i obradu teksta – MS Excel">
+          <div class="card-top">
+            <div class="icon-wrap" aria-hidden="true">
+              <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+                fill="#000000" width="34">
+                <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+                <g id="SVGRepo_iconCarrier">
+                  <defs>
+                    <linearGradient id="a" x1="4.494" y1="-2092.086" x2="13.832" y2="-2075.914"
+                      gradientTransform="translate(0 2100)" gradientUnits="userSpaceOnUse">
+                      <stop offset="0" stop-color="#18884f"></stop>
+                      <stop offset="0.5" stop-color="#117e43"></stop>
+                      <stop offset="1" stop-color="#0b6631"></stop>
+                    </linearGradient>
+                  </defs>
+                  <title>file_type_excel</title>
+                  <path
+                    d="M19.581,15.35,8.512,13.4V27.809A1.192,1.192,0,0,0,9.705,29h19.1A1.192,1.192,0,0,0,30,27.809h0V22.5Z"
+                    style="fill:#185c37"></path>
+                  <path d="M19.581,3H9.705A1.192,1.192,0,0,0,8.512,4.191h0V9.5L19.581,16l5.861,1.95L30,16V9.5Z"
+                    style="fill:#21a366"></path>
+                  <path d="M8.512,9.5H19.581V16H8.512Z" style="fill:#107c41"></path>
+                  <path d="M16.434,8.2H8.512V24.45h7.922a1.2,1.2,0,0,0,1.194-1.191V9.391A1.2,1.2,0,0,0,16.434,8.2Z"
+                    style="opacity:0.10000000149011612;isolation:isolate"></path>
+                  <path d="M15.783,8.85H8.512V25.1h7.271a1.2,1.2,0,0,0,1.194-1.191V10.041A1.2,1.2,0,0,0,15.783,8.85Z"
+                    style="opacity:0.20000000298023224;isolation:isolate"></path>
+                  <path d="M15.783,8.85H8.512V23.8h7.271a1.2,1.2,0,0,0,1.194-1.191V10.041A1.2,1.2,0,0,0,15.783,8.85Z"
+                    style="opacity:0.20000000298023224;isolation:isolate"></path>
+                  <path d="M15.132,8.85H8.512V23.8h6.62a1.2,1.2,0,0,0,1.194-1.191V10.041A1.2,1.2,0,0,0,15.132,8.85Z"
+                    style="opacity:0.20000000298023224;isolation:isolate"></path>
+                  <path
+                    d="M3.194,8.85H15.132a1.193,1.193,0,0,1,1.194,1.191V21.959a1.193,1.193,0,0,1-1.194,1.191H3.194A1.192,1.192,0,0,1,2,21.959V10.041A1.192,1.192,0,0,1,3.194,8.85Z"
+                    style="fill:#117e43"></path>
+                  <path
+                    d="M5.7,19.873l2.511-3.884-2.3-3.862H7.758L9.013,14.6c.116.234.2.408.238.524h.017c.082-.188.169-.369.26-.546l1.342-2.447h1.7l-2.359,3.84,2.419,3.905H10.821l-1.45-2.711A2.355,2.355,0,0,1,9.2,16.8H9.176a1.688,1.688,0,0,1-.168.351L7.515,19.873Z"
+                    style="fill:#fff"></path>
+                  <path d="M28.806,3H19.581V9.5H30V4.191A1.192,1.192,0,0,0,28.806,3Z" style="fill:#33c481"></path>
+                  <path d="M19.581,16H30v6.5H19.581Z" style="fill:#107c41"></path>
+                </g>
+              </svg>
+            </div>
+            <span class="tag">Tema 6</span>
+          </div>
+
+          <h3>Programi za izradu tabličnih proračuna – MS Excel </h3>
+          <p>
+            Materijal uvodi učenike u radno okruženje programa Microsoft Excel te objašnjava kako izraditi, urediti i
+            oblikovati proračunske tablice. Kroz primjere uče se pokretanje programa, rad sa sučeljem, unos i uređivanje
+            podataka, spremanje radnih knjiga te osnovno oblikovanje ćelija, redaka, stupaca, tablica, formula i
+            grafikona.
+          </p>
+
+          <div class="highlights" aria-label="Ključne teme">
+            <span class="chip">Sučelje i kartice</span>
+            <span class="chip">Ćelije i formati</span>
+            <span class="chip">Funkcije</span>
+            <span class="chip">Grafikoni</span>
+          </div>
+
+          <div class="cta-row">
+            <span class="cta">Otvori lekciju <span aria-hidden="true">→</span></span>
+            <span class="meta">Osnove rada u MS Excelu</span>
+          </div>
+        </a> -->
+
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="savjeti">
+      <div class="section-head">
+        <div>
+          <h2 id="savjeti">Savjeti za rad</h2>
+          <p>Kratke smjernice mogu pomoći da materijale iskoristite učinkovitije tijekom sata, kod kuće ili pri pripremi
+            za provjeru znanja.</p>
+        </div>
+      </div>
+
+      <div class="notes">
+        <article class="note">
+          <h3>Prije otvaranja lekcije</h3>
+          <ul>
+            <li>Pripremi bilježnicu ili digitalne bilješke.</li>
+            <li>Pročitaj naslov i pokušaj predvidjeti što ćeš naučiti.</li>
+            <li>Obrati pažnju na nove pojmove i primjere iz prakse.</li>
+          </ul>
+        </article>
+
+        <article class="note">
+          <h3>Nakon pregleda sadržaja</h3>
+          <ul>
+            <li>Zapiši tri najvažnije informacije koje si zapamtio.</li>
+            <li>Poveži gradivo s radom u servisu, dućanu ili komunikacijom s klijentima.</li>
+            <li>Vrati se na kartice kad trebaš brzo ponavljanje.</li>
+          </ul>
+        </article>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <div class="container footer-box">
+        <p>Pregled za učenike <a href="https://ss-ban-jjelacic-zapresic.skole.hr/" target="_blank"
+            class="ssbjj">SŠBJJ</a>
+        </p>
+        <!-- <script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js"
+          data-name="bmc-button" data-slug="clockworks" data-color="#FFDD00" data-emoji="☕" data-font="Poppins"
+          data-text="Buy me coffee" data-outline-color="#000000" data-font-color="#000000"
+          data-coffee-color="#ffffff"></script> -->
+      </div>
+    </footer>
+  </main>
+</body>
+
+</html>

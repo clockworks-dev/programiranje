@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="hr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>C++ — osnovni pojmovi</title>
+  <style>
+    :root{--bg:#07111f;--panel:#10213a;--panel-dark:#0b192d;--text:#f2f8ff;--muted:#b7c7da;--cyan:#57ddff;--violet:#a58cff;--yellow:#ffd166;--green:#73ebbc;--red:#ff98a5;--line:rgba(184,219,255,.2)}
+    *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;color:var(--text);background:radial-gradient(circle at 13% 8%,#144371 0,transparent 30%),radial-gradient(circle at 92% 5%,#392567 0,transparent 30%),var(--bg);font:16px/1.55 Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}.topbar{position:fixed;z-index:10;inset:0 0 auto;display:flex;align-items:center;justify-content:space-between;height:59px;padding:0 5vw;background:rgba(7,17,31,.86);border-bottom:1px solid var(--line);backdrop-filter:blur(14px)}.brand{font-size:.9rem;font-weight:800;letter-spacing:.08em}.brand b{color:var(--cyan)}.status{font-variant-numeric:tabular-nums;color:var(--muted)}.progress{position:fixed;z-index:11;top:58px;height:3px;width:0;background:linear-gradient(90deg,var(--cyan),var(--violet),var(--yellow));transition:width .12s}main{max-width:1120px;margin:auto;padding:84px 24px 72px}.slide{min-height:calc(100vh - 84px);display:flex;flex-direction:column;justify-content:center;gap:22px;padding:36px 0;border-bottom:1px solid var(--line)}.slide:last-child{border-bottom:0}.eyebrow{font-size:.78rem;color:var(--cyan);font-weight:800;letter-spacing:.14em;text-transform:uppercase}h1,h2,h3,p{margin:0}h1{max-width:980px;font-size:clamp(3rem,7vw,5.8rem);line-height:1.01;letter-spacing:-.045em}h2{font-size:clamp(2.1rem,4.7vw,3.7rem);line-height:1.06;letter-spacing:-.035em}h3{font-size:1.1rem}.lead{max-width:870px;font-size:clamp(1.07rem,2vw,1.38rem);color:var(--muted)}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:17px}.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:17px}.card{padding:22px;border:1px solid var(--line);border-radius:18px;background:linear-gradient(145deg,rgba(22,49,82,.91),rgba(10,24,45,.91));box-shadow:0 20px 40px rgba(0,0,0,.16)}.card p,.card li{color:var(--muted)}.card ul,.card ol{margin:10px 0 0;padding-left:21px}.card li+li{margin-top:5px}pre{margin:0;overflow:auto;padding:18px;border-radius:14px;border:1px solid rgba(87,221,255,.22);background:#050b14;color:#e1f2ff;font:14px/1.58 ui-monospace,SFMono-Regular,Consolas,monospace}code{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;color:#dff5ff}.note{padding:14px 18px;border-left:4px solid var(--yellow);border-radius:0 12px 12px 0;background:rgba(255,209,102,.085);color:#ffe5a3}.warning{color:var(--red)!important}.good{color:var(--green)!important}.muted{color:var(--muted)}.chips{display:flex;flex-wrap:wrap;gap:8px}.chip{padding:5px 10px;border-radius:999px;border:1px solid var(--line);font-size:.86rem;color:var(--muted);background:rgba(7,17,31,.28)}table{border-collapse:collapse;width:100%;overflow:hidden;border:1px solid var(--line);border-radius:14px;background:rgba(5,11,20,.35)}th,td{text-align:left;padding:12px 14px;border-bottom:1px solid var(--line);vertical-align:top}th{color:var(--cyan);font-size:.9rem}tr:last-child td{border-bottom:0}.quiz button{margin:9px 6px 0 0;padding:9px 12px;color:var(--text);cursor:pointer;background:#142d4d;border:1px solid var(--line);border-radius:9px}.quiz button:hover{border-color:var(--cyan);color:var(--cyan)}.answer{min-height:26px;margin-top:11px;color:var(--green)}.nav{position:fixed;z-index:10;right:5vw;bottom:20px;display:flex;gap:8px}.nav button{padding:9px 13px;color:var(--text);font-size:1.1rem;cursor:pointer;border:1px solid var(--line);border-radius:10px;background:rgba(11,25,45,.9)}.nav button:hover{color:var(--cyan);border-color:var(--cyan)}.num{font-size:3rem;line-height:1;color:var(--cyan);font-weight:850}@media(max-width:760px){main{padding:75px 16px}.slide{min-height:auto;padding:55px 0}.grid,.grid3{grid-template-columns:1fr}.topbar{height:52px;padding:0 16px}.progress{top:51px}.brand{font-size:.75rem}.nav{right:16px;bottom:14px}}@media print{.topbar,.progress,.nav{display:none}body{background:#fff;color:#111}main{padding:0}.slide{min-height:auto;page-break-after:always}.card,pre,table{color:#111;background:#f5f7fa;border-color:#bbb}.card p,.card li,.lead{color:#333}}
+  </style>
+</head>
+<body>
+  <header class="topbar"><div class="brand">PROGRAMIRANJE <b>• C++ • 2. RAZRED</b></div><div class="status" id="status">1 / 10</div></header><div class="progress" id="progress"></div>
+  <main>
+    <section class="slide">
+      <div class="eyebrow">Tehničar za računarstvo</div>
+      <h1>C++: osnovni pojmovi za čitljiv i točan program</h1>
+      <p class="lead">Prezentacija obrađuje isključivo pet cjelina: osnovne tipove podataka, konstante, standardne biblioteke, redoslijed operanada i ključnu riječ <code>auto</code>.</p>
+      <div class="grid3"><div class="card"><div class="num">01</div><h3>Tipovi podataka</h3><p>Što program sprema i kako s time računa.</p></div><div class="card"><div class="num">02</div><h3>Konstante</h3><p>Vrijednosti koje štitimo od izmjene.</p></div><div class="card"><div class="num">03</div><h3>Biblioteke i izrazi</h3><p>Gotovi alati i sigurno pisanje izraza.</p></div></div>
+    </section>
+
+    <section class="slide">
+      <div class="eyebrow">1 · Osnovni tipovi podataka</div><h2>Tip opisuje vrstu vrijednosti u memoriji</h2>
+      <p class="lead">Pri deklaraciji varijable u C++-u određujemo kakav podatak varijabla može sadržavati. Pravilan tip olakšava računanje i sprječava pogreške.</p>
+      <table><thead><tr><th>Tip</th><th>Primjer</th><th>Upotreba</th></tr></thead><tbody><tr><td><code>int</code></td><td><code>int brojUcenika = 26;</code></td><td>Cijeli brojevi.</td></tr><tr><td><code>double</code></td><td><code>double napon = 230.0;</code></td><td>Realni brojevi, veća preciznost.</td></tr><tr><td><code>float</code></td><td><code>float temp = 21.5f;</code></td><td>Realni brojevi, obično manja preciznost od <code>double</code>.</td></tr><tr><td><code>char</code></td><td><code>char razred = 'B';</code></td><td>Jedan znak, piše se jednostrukim navodnicima.</td></tr><tr><td><code>bool</code></td><td><code>bool prijavljen = true;</code></td><td>Logička vrijednost: <code>true</code> ili <code>false</code>.</td></tr><tr><td><code>std::string</code></td><td><code>std::string ime = "Ana";</code></td><td>Tekst; zahtijeva zaglavlje <code>&lt;string&gt;</code>.</td></tr></tbody></table>
+      <div class="note">Tipovi <code>bool</code>, cjelobrojni tipovi, tipovi znakova i tipovi s pomičnim zarezom pripadaju temeljnim tipovima C++-a. <code>std::string</code> je tip iz standardne biblioteke.</div>
+    </section>
+
+    <section class="slide">
+      <div class="eyebrow">1 · Odabir tipa</div><h2>Odaberi tip prema značenju podatka</h2>
+      <div class="grid"><div class="card"><h3>Primjer mjerenja</h3><pre><code>int brojSenzora = 4;
+double temperatura = 23.75;
+bool alarmAktivan = false;
+char oznakaZone = 'A';</code></pre><p>Broj senzora nema decimalni dio, dok temperatura može imati.</p></div><div class="card"><h3>Pazi na cjelobrojno dijeljenje</h3><pre><code>int a = 5;
+int b = 2;
+int rezultat1 = a / b;        // 2
+
+double rezultat2 = 5.0 / 2;  // 2.5</code></pre><p>Izraz s dva <code>int</code> operanda daje cjelobrojni rezultat. Dovoljno je da barem jedan operand bude realan kako bi rezultat mogao sadržavati decimalni dio.</p></div></div>
+      <div class="chips"><span class="chip">brojač → int</span><span class="chip">mjerenje → double</span><span class="chip">da/ne → bool</span><span class="chip">jedan znak → char</span><span class="chip">tekst → std::string</span></div>
+    </section>
+
+    <section class="slide">
+      <div class="eyebrow">2 · Konstante</div><h2><code>const</code> štiti vrijednost od izmjene</h2>
+      <p class="lead">Konstanta se inicijalizira pri deklaraciji. Nakon toga joj se vrijednost ne smije mijenjati.</p>
+      <div class="grid"><div class="card"><h3>Primjer</h3><pre><code>const double PDV = 0.25;
+const int MAKS_BODOVA = 100;
+
+double cijena = 80.0;
+double sPdv = cijena * (1 + PDV);</code></pre></div><div class="card"><h3>Zašto je to dobra praksa?</h3><ul><li>Ime konstante objašnjava značenje vrijednosti.</li><li>Kompajler sprječava slučajnu izmjenu.</li><li>Izbjegavaju se „magični brojevi” u kodu.</li><li>Promjena pravila radi se na jednom mjestu.</li></ul></div></div>
+      <pre><code>const int MAX_POKUSAJA = 3;
+// MAX_POKUSAJA = 5;  // pogreška: const vrijednost se ne može mijenjati</code></pre>
+      <div class="note">Nazivi konstanti često se pišu velikim slovima radi lakšeg prepoznavanja, ali to je dogovor programera — ključna riječ koja štiti vrijednost jest <code>const</code>.</div>
+    </section>
+
+    <section class="slide">
+      <div class="eyebrow">3 · Standardne biblioteke</div><h2>Provjereni alati koji dolaze uz C++</h2>
+      <p class="lead">Standardna biblioteka nudi zaglavlja, funkcije i klase za česte zadatke. Uključujemo ih naredbom <code>#include</code>.</p>
+      <div class="grid3"><div class="card"><h3><code>&lt;iostream&gt;</code></h3><p>Ulaz i izlaz: <code>std::cin</code>, <code>std::cout</code>.</p></div><div class="card"><h3><code>&lt;cmath&gt;</code></h3><p>Matematika: <code>std::sqrt</code>, <code>std::pow</code>, <code>std::abs</code>.</p></div><div class="card"><h3><code>&lt;algorithm&gt;</code></h3><p>Algoritmi: <code>std::max</code>, <code>std::min</code>, <code>std::sort</code>.</p></div><div class="card"><h3><code>&lt;string&gt;</code></h3><p>Tekstualni tip <code>std::string</code>.</p></div><div class="card"><h3><code>&lt;iomanip&gt;</code></h3><p>Oblikovanje ispisa: <code>std::fixed</code>, <code>std::setprecision</code>.</p></div><div class="card"><h3><code>&lt;vector&gt;</code></h3><p>Dinamički niz: <code>std::vector</code>.</p></div></div>
+    </section>
+
+    <section class="slide">
+      <div class="eyebrow">3 · Korištenje biblioteke</div><h2><code>#include</code>, <code>std::</code> i funkcija</h2>
+      <div class="grid"><div class="card"><h3>Jasan način</h3><pre><code>#include &lt;iostream&gt;
+#include &lt;cmath&gt;
+
+int main() {
+    double korijen = std::sqrt(81.0);
+    std::cout &lt;&lt; korijen;
+}</code></pre><p><code>std::</code> pokazuje da ime dolazi iz standardnog prostora imena.</p></div><div class="card"><h3>Što provjeriti?</h3><ul><li>Je li uključeno odgovarajuće zaglavlje?</li><li>Prima li funkcija odgovarajući tip argumenta?</li><li>Koji tip funkcija vraća?</li><li>Jesu li rubni slučajevi ispravni, npr. korijen negativnog broja?</li></ul></div></div>
+      <div class="note">Standardna biblioteka obuhvaća mnogo više od ispisa: kontejnere, algoritme, rad s tekstom, matematičke funkcije, datoteke i druge alate.</div>
+    </section>
+
+    <section class="slide">
+      <div class="eyebrow">4 · Redoslijed operanada</div><h2>Prioritet operatora određuje grupiranje izraza</h2>
+      <div class="grid"><div class="card"><h3>Prioritet</h3><pre><code>int x = 2 + 3 * 4;     // 14
+int y = (2 + 3) * 4;   // 20</code></pre><p>Operator <code>*</code> ima veći prioritet od <code>+</code>. Zagrade mijenjaju grupiranje izraza i jasno pokazuju namjeru.</p></div><div class="card"><h3>Sažeti prioriteti</h3><ol><li>Zagrade: <code>()</code></li><li>Jednočlani operatori: npr. <code>!</code>, <code>++</code></li><li>Množenje, dijeljenje, ostatak: <code>* / %</code></li><li>Zbrajanje i oduzimanje: <code>+ -</code></li><li>Usporedbe i logički operatori: <code>&lt;</code>, <code>==</code>, <code>&amp;&amp;</code>, <code>||</code></li><li>Pridruživanje: <code>=</code></li></ol></div></div>
+      <div class="note">Kada postoji i najmanja dvojba, dodaj zagrade. One su najbrži način da izraz bude čitljiv i nedvosmislen.</div>
+    </section>
+
+    <section class="slide">
+      <div class="eyebrow">4 · Oprez pri evaluaciji</div><h2>Ne miješaj prioritet s redoslijedom izvođenja</h2>
+      <p class="lead">Prioritet govori kako se izraz grupira. Redoslijed kojim se pojedini operandi evaluiraju nije općenito određen za gotovo sve C++ operatore.</p>
+      <div class="grid"><div class="card"><h3>Izbjegni sporedne učinke</h3><pre><code>int i = 1;
+
+// Loša i nejasna ideja:
+// int z = i++ + i;</code></pre><p class="warning">Ne mijenjaj istu varijablu više puta u jednom složenom izrazu. Kod je teško čitljiv i može ovisiti o pravilima evaluacije.</p></div><div class="card"><h3>Piši jasnije</h3><pre><code>int i = 1;
+int prvi = i;
+i++;
+int z = prvi + i;</code></pre><p class="good">Više jednostavnih naredbi lakše je provjeriti, objasniti i ispraviti.</p></div></div>
+    </section>
+
+    <section class="slide">
+      <div class="eyebrow">5 · Ključna riječ auto</div><h2>Kompajler zaključuje tip iz početne vrijednosti</h2>
+      <p class="lead">Ključna riječ <code>auto</code> omogućuje da se tip varijable zaključi iz inicijalizatora.</p>
+      <div class="grid"><div class="card"><h3>Primjeri</h3><pre><code>auto broj = 42;          // int
+auto napon = 230.0;      // double
+auto slovo = 'K';        // char
+auto aktivan = true;     // bool
+
+auto korijen = std::sqrt(144.0); // double</code></pre></div><div class="card"><h3>Važna pravila</h3><ul><li>Varijabla s <code>auto</code> mora imati početnu vrijednost.</li><li>Tip se određuje pri deklaraciji i kasnije se ne mijenja.</li><li><code>auto</code> je posebno koristan kada bi puni tip bio dug i neugledan.</li><li>Nemoj ga koristiti ako je čitatelju nejasno koji je tip dobiven.</li></ul></div></div>
+      <pre><code>// auto x;  // pogreška: kompajler nema vrijednost iz koje može zaključiti tip</code></pre>
+    </section>
+
+    <section class="slide">
+      <div class="eyebrow">Provjera znanja</div><h2>Kratko ponavljanje</h2>
+      <div class="grid quiz"><div class="card"><h3>1. Koji je rezultat izraza?</h3><pre><code>int x = 10 - 2 * 3;</code></pre><button onclick="show('a1','Točno: najprije se računa 2 * 3, zatim 10 - 6 = 4.')">4</button><button onclick="show('a1','Netočno: množenje ima veći prioritet od oduzimanja.')">24</button><div class="answer" id="a1"></div></div><div class="card"><h3>2. Za što služi <code>const</code>?</h3><button onclick="show('a2','Točno: const sprječava promjenu vrijednosti nakon inicijalizacije.')">Za zaštitu vrijednosti od izmjene</button><button onclick="show('a2','Netočno: za zaključivanje tipa služi auto.')">Za automatsko određivanje tipa</button><div class="answer" id="a2"></div></div></div>
+      <div class="card"><h3>Zadatak za vježbu</h3><p>Napiši program koji učitava duljinu i širinu pravokutnika kao <code>double</code>, definira konstantu <code>const double PDV = 0.25</code>, računa površinu, koristi <code>auto</code> za varijablu rezultata i ispisuje rezultat s dvije decimale. Uključi zaglavlja <code>&lt;iostream&gt;</code> i <code>&lt;iomanip&gt;</code>.</p></div>
+      <div class="note"><strong>Zapamti:</strong> dobar C++ kod koristi odgovarajuće tipove, imenuje nepromjenjive vrijednosti konstantama, oslanja se na standardnu biblioteku i piše izraze bez dvosmislenosti.</div>
+    </section>
+  </main>
+  <nav class="nav" aria-label="Navigacija"><button type="button" onclick="go(-1)" aria-label="Prethodni slajd">←</button><button type="button" onclick="go(1)" aria-label="Sljedeći slajd">→</button></nav>
+  <script>
+    const slides=[...document.querySelectorAll('.slide')];const status=document.getElementById('status');const progress=document.getElementById('progress');
+    function current(){let x=0;slides.forEach((s,i)=>{if(s.getBoundingClientRect().top<innerHeight*.53)x=i});return x}function update(){const h=document.documentElement.scrollHeight-innerHeight;progress.style.width=(h?scrollY/h*100:0)+'%';status.textContent=`${current()+1} / ${slides.length}`}function go(d){const i=Math.max(0,Math.min(slides.length-1,current()+d));slides[i].scrollIntoView({behavior:'smooth'})}function show(id,message){document.getElementById(id).textContent=message}addEventListener('scroll',update,{passive:true});update();
+  </script>
+</body>
+</html>
