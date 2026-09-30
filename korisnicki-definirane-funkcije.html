@@ -1,0 +1,534 @@
+<!doctype html>
+<html lang="hr">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Korisnički definirane funkcije — Programiranje, 2. razred</title>
+    <style>
+        :root {
+            color-scheme: dark;
+            --bg: #0a1223;
+            --panel: #14223a;
+            --ink: #f0f6ff;
+            --muted: #b6c9e3;
+            --accent: #68e5d1;
+            --warm: #ffd17d;
+            --border: #31435f
+        }
+
+        * {
+            box-sizing: border-box
+        }
+
+        body {
+            margin: 0;
+            background: radial-gradient(circle at 85% 10%, #173c55, transparent 37%), var(--bg);
+            color: var(--ink);
+            font: clamp(16px, 1.45vw, 20px)/1.5 system-ui, Segoe UI, sans-serif
+        }
+
+        button {
+            font: inherit;
+            cursor: pointer
+        }
+
+        main {
+            max-width: 1180px;
+            margin: auto
+        }
+
+        .slide {
+            display: none;
+            min-height: 100dvh;
+            padding: clamp(28px, 5vw, 70px) clamp(22px, 5vw, 65px) 105px;
+            align-content: center
+        }
+
+        .slide.active {
+            display: grid;
+            gap: 20px
+        }
+
+        .eyebrow {
+            color: var(--accent);
+            font-weight: 750;
+            letter-spacing: .12em;
+            text-transform: uppercase;
+            font-size: .75em
+        }
+
+        h1,
+        h2,
+        h3,
+        p {
+            margin: 0
+        }
+
+        h1 {
+            font-size: clamp(2.7rem, 6vw, 5.8rem);
+            line-height: 1.08
+        }
+
+        h2 {
+            font-size: clamp(2rem, 4vw, 3.6rem);
+            line-height: 1.14
+        }
+
+        h3 {
+            font-size: 1.2em;
+            color: var(--accent)
+        }
+
+        p,
+        li {
+            max-width: 75ch
+        }
+
+        ul,
+        ol {
+            margin: 0;
+            padding-left: 1.35em
+        }
+
+        li+li {
+            margin-top: .48em
+        }
+
+        .lead {
+            font-size: clamp(1.2rem, 2vw, 1.55rem);
+            color: var(--muted)
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 18px
+        }
+
+        .card {
+            background: rgba(20, 34, 58, .9);
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            padding: 22px
+        }
+
+        .card p+p {
+            margin-top: 12px
+        }
+
+        .tag {
+            display: inline-block;
+            border: 1px solid var(--accent);
+            border-radius: 100px;
+            padding: 4px 13px;
+            color: var(--accent);
+            font-size: .8em
+        }
+
+        code,
+        pre {
+            font-family: ui-monospace, SFMono-Regular, Consolas, monospace
+        }
+
+        code {
+            color: var(--warm)
+        }
+
+        pre {
+            background: #08101e;
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 18px 22px;
+            overflow: auto;
+            font-size: clamp(.79rem, 1.35vw, 1.06rem);
+            line-height: 1.55;
+            margin: 0;
+            tab-size: 4
+        }
+
+        pre code {
+            color: #e7f0ff
+        }
+
+        .note {
+            border-left: 4px solid var(--warm);
+            background: #352c29;
+            padding: 13px 18px;
+            border-radius: 0 12px 12px 0
+        }
+
+        .controls {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #0b1525ed;
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 14px;
+            padding: 10px;
+            z-index: 5
+        }
+
+        .controls button,
+        .solution-btn {
+            border: 1px solid var(--border);
+            background: var(--panel);
+            color: var(--ink);
+            border-radius: 11px;
+            padding: 8px 16px
+        }
+
+        .controls button:hover,
+        .solution-btn:hover {
+            border-color: var(--accent)
+        }
+
+        button:focus-visible {
+            outline: 3px solid var(--accent);
+            outline-offset: 2px
+        }
+
+        .counter {
+            min-width: 80px;
+            text-align: center;
+            color: var(--muted)
+        }
+
+        .progress {
+            height: 3px;
+            background: var(--accent);
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            z-index: 6;
+            transition: width .2s
+        }
+
+        .solution[hidden] {
+            display: none
+        }
+
+        .solution {
+            margin-top: 12px
+        }
+
+        .small {
+            font-size: .88em;
+            color: var(--muted)
+        }
+
+        @media(max-width:720px) {
+            .grid {
+                grid-template-columns: 1fr
+            }
+
+            .slide {
+                align-content: start;
+                min-height: 100dvh;
+                padding-top: 40px
+            }
+
+            pre {
+                white-space: pre;
+                max-width: calc(100vw - 44px)
+            }
+
+            .card {
+                padding: 17px
+            }
+        }
+
+        @media print {
+            body {
+                background: white;
+                color: #111
+            }
+
+            .slide,
+            .slide.active {
+                display: block;
+                min-height: 0;
+                break-after: page;
+                padding: 28px
+            }
+
+            .card,
+            pre,
+            .note {
+                background: #f5f7fa;
+                color: #111;
+                border-color: #bbb
+            }
+
+            pre code,
+            code,
+            h3,
+            .eyebrow {
+                color: #145566
+            }
+
+            .controls,
+            .progress,
+            .solution-btn {
+                display: none
+            }
+
+            .solution[hidden] {
+                display: block
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <main id="deck">
+        <section class="slide active" aria-label="Naslov"><span class="eyebrow">Programiranje · 2. razred · tehničar za
+                računarstvo</span>
+            <h1>Korisnički definirane funkcije</h1>
+            <p class="lead">Podijeli problem na manje zadatke. Napiši funkciju jednom, pozovi je više puta.</p>
+            <p><span class="tag">Primjeri u C++-u</span></p>
+        </section>
+        <section class="slide"><span class="eyebrow">01 · Ishodi</span>
+            <h2>Što ćemo naučiti?</h2>
+            <div class="grid">
+                <div class="card">
+                    <ul>
+                        <li>Objasniti zašto program dijelimo na funkcije.</li>
+                        <li>Prepoznati gotove i napisati vlastite funkcije.</li>
+                        <li>Odabrati naziv, parametre i povratni tip.</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <ul>
+                        <li>Razlikovati deklaraciju od definicije.</li>
+                        <li>Pozvati funkciju s ispravnim argumentima.</li>
+                        <li>Razlikovati povratnu vrijednost od radnje tipa <code>void</code>.</li>
+                    </ul>
+                </div>
+        </section>
+        <section class="slide"><span class="eyebrow">02 · Osnovna ideja</span>
+            <h2>Što je funkcija?</h2>
+            <p class="lead">Funkcija je imenovani dio programa koji obavlja određeni zadatak; može primiti podatke i
+                vratiti rezultat.</p>
+            <div class="grid">
+                <div class="card">
+                    <h3>Zašto je koristimo?</h3>
+                    <ul>
+                        <li>Manje ponavljanja istog koda.</li>
+                        <li>Jednostavnije čitanje i testiranje.</li>
+                        <li>Složen problem postaje niz manjih zadataka.</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h3>Jednostavan prikaz</h3>
+                    <pre><code>argumenti → funkcija → rezultat
+  3, 4   →  zbroji  →   7</code></pre>
+                    <p class="small">I funkcija <code>main()</code> funkcija je programa.</p>
+                </div>
+            </div>
+        </section>
+        <section class="slide"><span class="eyebrow">03 · Gotove funkcije</span>
+            <h2>Prije vlastite: gotova funkcija</h2>
+            <div class="grid">
+                <div class="card">
+                    <pre><code>#include &lt;iostream&gt;
+#include &lt;cmath&gt;
+using namespace std;
+
+int main() {
+    double x = 25.0;
+    cout &lt;&lt; sqrt(x) &lt;&lt; '\n'; // 5
+    return 0;
+}</code></pre>
+                </div>
+                <div class="card">
+                    <p><code>sqrt(x)</code> je unaprijed definirana funkcija iz zaglavlja <code>&lt;cmath&gt;</code>.
+                        Dobiva argument <code>x</code> i vraća njegov kvadratni korijen.</p>
+                    <p class="note">Pitanje: koju vrijednost ispisuje <code>sqrt(81.0)</code>? Odgovor: <code>9</code>.
+                    </p>
+                </div>
+            </div>
+        </section>
+        <section class="slide"><span class="eyebrow">04 · Sastavni dijelovi</span>
+            <h2>Potpis, parametri, rezultat</h2>
+            <pre><code>int zbroji(int a, int b) {
+    return a + b;
+}</code></pre>
+            <div class="grid">
+                <div class="card">
+                    <p><code>int</code> = tip povratne vrijednosti; <code>zbroji</code> = naziv;
+                        <code>int a, int b</code> = parametri.
+                    </p>
+                </div>
+                <div class="card">
+                    <p><code>return a + b;</code> vraća izračunani rezultat i završava izvršavanje funkcije.</p>
+                </div>
+            </div>
+            <p class="small">Naziv neka govori što funkcija radi; tipovi argumenata moraju odgovarati parametrima.</p>
+        </section>
+        <section class="slide"><span class="eyebrow">05 · Deklaracija i definicija</span>
+            <h2>Najava ≠ izvedba</h2>
+            <div class="grid">
+                <div class="card">
+                    <h3>Deklaracija (prototip)</h3>
+                    <pre><code>int zbroji(int a, int b);</code></pre>
+                    <p>Najavljuje naziv, povratni tip i parametre. Završava točkom sa zarezom.</p>
+                </div>
+                <div class="card">
+                    <h3>Definicija</h3>
+                    <pre><code>int zbroji(int a, int b) {
+    return a + b;
+}</code></pre>
+                    <p>Sadrži tijelo funkcije: naredbe koje se izvršavaju.</p>
+                </div>
+            </div>
+            <p class="note">Ako je definicija prije poziva, zasebna deklaracija u jednostavnom primjeru nije potrebna.
+                Ako je definicija poslije <code>main()</code>, deklariraj funkciju prije poziva.</p>
+        </section>
+        <section class="slide"><span class="eyebrow">06 · Pozivanje</span>
+            <h2>Parametar nije argument</h2>
+            <pre><code>#include &lt;iostream&gt;
+using namespace std;
+
+int zbroji(int a, int b); // deklaracija
+
+int main() {
+    int prvi = 3, drugi = 4;
+    int rezultat = zbroji(prvi, drugi); // poziv
+    cout &lt;&lt; rezultat &lt;&lt; '\n';         // 7
+    return 0;
+}
+
+int zbroji(int a, int b) { // definicija
+    return a + b;
+}</code></pre>
+            <p><code>a</code> i <code>b</code> su parametri u definiciji; <code>prvi</code> i <code>drugi</code>
+                argumenti pri pozivu. Vrijednosti se ovdje predaju po vrijednosti.</p>
+        </section>
+        <section class="slide"><span class="eyebrow">07 · Dvije vrste</span>
+            <h2>Vraća vrijednost ili obavlja radnju?</h2>
+            <div class="grid">
+                <div class="card">
+                    <h3>Vraća vrijednost</h3>
+                    <pre><code>int kvadrat(int broj) {
+    return broj * broj;
+}
+
+int x = kvadrat(5); // x = 25</code></pre>
+                    <p>Rezultat možemo spremiti ili dalje računati.</p>
+                </div>
+                <div class="card">
+                    <h3>Bez povratne vrijednosti</h3>
+                    <pre><code>void ispisiPozdrav() {
+    cout &lt;&lt; "Pozdrav!\n";
+}
+
+ispisiPozdrav();</code></pre>
+                    <p><code>void</code> označava da funkcija ne vraća vrijednost. Poziv izvršava radnju.</p>
+                </div>
+            </div>
+        </section>
+        <section class="slide"><span class="eyebrow">08 · Razdvajanje zadatka</span>
+            <h2>Jedan problem, više funkcija</h2>
+            <p class="lead">Zadatak: izračunaj cijenu nakon popusta i ispiši račun.</p>
+            <div class="grid">
+                <div class="card">
+                    <h3>Podjela rada</h3>
+                    <ol>
+                        <li><code>izracunajPopust(cijena, postotak)</code> vraća iznos popusta.</li>
+                        <li><code>konacnaCijena(cijena, postotak)</code> poziva prvu funkciju i vraća novi iznos.</li>
+                        <li><code>ispisiRacun(...)</code> ispisuje rezultat bez vraćanja vrijednosti.</li>
+                    </ol>
+                </div>
+                <div class="card">
+                    <h3>Tok programa</h3>
+                    <pre><code>main()
+  ├─ konacnaCijena(80, 25)
+  │    └─ izracunajPopust(80, 25)
+  └─ ispisiRacun(80, 25, 60)</code></pre>
+                    <p class="small">Očekivano: popust 20, konačna cijena 60.</p>
+                </div>
+            </div>
+        </section>
+        <section class="slide"><span class="eyebrow">09 · Vježba</span>
+            <h2>Napiši program: popust</h2>
+            <div class="card">
+                <ol>
+                    <li>Učitaj početnu cijenu i postotak popusta.</li>
+                    <li>Napiši deklaracije funkcija prije <code>main()</code>, a definicije poslije nje.</li>
+                    <li>Funkcija <code>izracunajPopust</code> vraća iznos popusta.</li>
+                    <li>Funkcija <code>konacnaCijena</code> poziva <code>izracunajPopust</code> i vraća konačnu cijenu.
+                    </li>
+                    <li>Funkcija <code>ispisiRacun</code> tipa <code>void</code> ispisuje podatke.</li>
+                </ol>
+            </div>
+            <p class="note">Provjeri za cijenu 80 i popust 25% → konačna cijena 60. Pretpostavi nenegativnu cijenu i
+                postotak od 0 do 100.</p><button class="solution-btn" id="toggle" aria-expanded="false"
+                aria-controls="solution">Prikaži primjer rješenja</button>
+            <div id="solution" class="solution" hidden>
+                <pre><code>#include &lt;iostream&gt;
+#include &lt;iomanip&gt;
+using namespace std;
+
+double izracunajPopust(double cijena, double postotak);
+double konacnaCijena(double cijena, double postotak);
+void ispisiRacun(double cijena, double postotak, double ukupno);
+
+int main() {
+    double cijena, postotak;
+    cout &lt;&lt; "Cijena i popust (%): ";
+    if (!(cin &gt;&gt; cijena &gt;&gt; postotak) || cijena &lt; 0 ||
+        postotak &lt; 0 || postotak &gt; 100) {
+        cout &lt;&lt; "Neispravan unos.\n";
+        return 1;
+    }
+    double ukupno = konacnaCijena(cijena, postotak);
+    ispisiRacun(cijena, postotak, ukupno);
+    return 0;
+}
+
+double izracunajPopust(double cijena, double postotak) {
+    return cijena * postotak / 100.0;
+}
+
+double konacnaCijena(double cijena, double postotak) {
+    return cijena - izracunajPopust(cijena, postotak);
+}
+
+void ispisiRacun(double cijena, double postotak, double ukupno) {
+    cout &lt;&lt; fixed &lt;&lt; setprecision(2);
+    cout &lt;&lt; "Pocetna cijena: " &lt;&lt; cijena &lt;&lt; '\n';
+    cout &lt;&lt; "Popust (%): " &lt;&lt; postotak &lt;&lt; '\n';
+    cout &lt;&lt; "Konacna cijena: " &lt;&lt; ukupno &lt;&lt; '\n';
+}</code></pre>
+            </div>
+        </section>
+        <section class="slide"><span class="eyebrow">10 · Provjera znanja</span>
+            <h2>Možeš li objasniti?</h2>
+            <div class="card">
+                <ol>
+                    <li>Što razlikuje deklaraciju od definicije funkcije?</li>
+                    <li>Koji su argumenti u pozivu <code>zbroji(3, 4)</code>?</li>
+                    <li>Zašto <code>void</code> funkciju ne možeš spremiti u varijablu tipa <code>int</code>?</li>
+                    <li>Koju funkciju u vježbi poziva <code>konacnaCijena</code>?</li>
+                    <li>Kako bi provjerio rezultat za popust od 0% i 100%?</li>
+                </ol>
+            </div>
+            <p class="lead">Izazov: dodaj funkciju <code>bool valjanPopust(double postotak)</code> i njome provjeri
+                unos.</p>
+        </section>
+    </main>
+    <nav class="controls" aria-label="Navigacija prezentacijom"><button id="prev"
+            aria-label="Prethodni slajd">←</button><span class="counter" id="counter" aria-live="polite"></span><button
+            id="next" aria-label="Sljedeći slajd">→</button></nav>
+    <div class="progress" id="progress"></div>
+    <script>
+        const slides = [...document.querySelectorAll('.slide')]; let index = 0; const counter = document.getElementById('counter'); function show(n) { index = Math.max(0, Math.min(slides.length - 1, n)); slides.forEach((s, i) => { s.classList.toggle('active', i === index); s.setAttribute('aria-hidden', i !== index) }); counter.textContent = `${index + 1} / ${slides.length}`; document.getElementById('progress').style.width = `${(index + 1) / slides.length * 100}%`; document.getElementById('prev').disabled = index === 0; document.getElementById('next').disabled = index === slides.length - 1; window.scrollTo(0, 0) } document.getElementById('prev').onclick = () => show(index - 1); document.getElementById('next').onclick = () => show(index + 1); document.addEventListener('keydown', e => { if (['ArrowRight', 'PageDown'].includes(e.key)) { e.preventDefault(); show(index + 1) } if (['ArrowLeft', 'PageUp'].includes(e.key)) { e.preventDefault(); show(index - 1) } }); document.getElementById('toggle').onclick = function () { const panel = document.getElementById('solution'); panel.hidden = !panel.hidden; this.setAttribute('aria-expanded', String(!panel.hidden)); this.textContent = panel.hidden ? 'Prikaži primjer rješenja' : 'Sakrij primjer rješenja' }; show(0);
+    </script>
+</body>
+
+</html>
