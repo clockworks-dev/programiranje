@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="hr">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Lokalne i globalne varijable — 2. razred</title>
+    <style>
+        * {
+            box-sizing: border-box
+        }
+
+        body {
+            margin: 0;
+            background: #0c1222;
+            color: #edf2ff;
+            font: 20px/1.55 system-ui, sans-serif
+        }
+
+        header,
+        footer {
+            padding: 12px 4vw;
+            background: #111b30;
+            display: flex;
+            gap: 16px;
+            align-items: center;
+            justify-content: space-between
+        }
+
+        header {
+            border-bottom: 1px solid #33415e
+        }
+
+        main {
+            max-width: 1220px;
+            margin: auto;
+            padding: 28px 4vw 40px;
+            min-height: 84vh;
+        }
+
+        .slide {
+            display: none
+        }
+
+        .slide.active {
+            display: block
+        }
+
+        h1 {
+            font-size: clamp(32px, 4vw, 56px);
+            line-height: 1.12;
+            margin: 12px 0 28px;
+            color: #8bd9ff
+        }
+
+        h3 {
+            margin: 0 0 12px;
+            color: #b6a6ff
+        }
+
+        p {
+            margin: 14px 0
+        }
+
+        .lead {
+            font-size: 28px
+        }
+
+        .eyebrow {
+            color: #b6a6ff;
+            text-transform: uppercase;
+            font-size: 14px;
+            letter-spacing: 2px
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 18px
+        }
+
+        .card,
+        .callout,
+        .warn,
+        details,
+        fieldset {
+            border: 1px solid #344362;
+            border-radius: 16px;
+            padding: 20px;
+            background: #162139;
+            margin: 16px 0
+        }
+
+        .card {
+            margin: 0
+        }
+
+        .callout {
+            border-left: 5px solid #58c9bb;
+            background: #123137
+        }
+
+        .warn {
+            border-left: 5px solid #c9c358;
+            background: #353712
+        }
+
+        .tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px
+        }
+
+        .tags span {
+            padding: 8px 14px;
+            background: #263654;
+            border-radius: 20px
+        }
+
+        pre {
+            background: #080e19;
+            border: 1px solid #30405c;
+            border-radius: 12px;
+            padding: 20px;
+            overflow: auto;
+            font: 18px/1.5 Consolas, monospace;
+            tab-size: 4;
+            color: #b8efd4
+        }
+
+        li {
+            margin: 12px 0
+        }
+
+        .note {
+            font-size: 16px;
+            color: #b8c4da
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 18px
+        }
+
+        th,
+        td {
+            text-align: left;
+            border: 1px solid #3d4c68;
+            padding: 14px
+        }
+
+        th {
+            background: #243753
+        }
+
+        button {
+            background: #28446a;
+            color: white;
+            border: 1px solid #6688b3;
+            padding: 10px 18px;
+            border-radius: 9px;
+            font: inherit;
+            font-size: 16px;
+            cursor: pointer
+        }
+
+        button:hover {
+            background: #39608d
+        }
+
+        button:disabled {
+            opacity: .4;
+            cursor: default
+        }
+
+        a {
+            color: #8bd9ff
+        }
+
+        summary {
+            cursor: pointer;
+            color: #8bd9ff
+        }
+
+        label {
+            display: block;
+            margin: 8px 0;
+            cursor: pointer
+        }
+
+        input {
+            accent-color: #7ed9ff
+        }
+
+        .feedback {
+            font-size: 17px
+        }
+
+        .ok {
+            color: #8fe0b6
+        }
+
+        .bad {
+            color: #ffb5b5
+        }
+
+        #bar {
+            height: 4px;
+            background: #70d1dd;
+            width: 0;
+            transition: width .2s
+        }
+
+        footer {
+            position: sticky;
+            bottom: 0;
+            font-size: 15px
+        }
+
+        .hint {
+            font-size: 14px;
+            color: #b8c4da
+        }
+
+        @media(max-width:760px) {
+            body {
+                font-size: 17px
+            }
+
+            .grid {
+                grid-template-columns: 1fr
+            }
+
+            pre {
+                font-size: 14px
+            }
+
+            table {
+                font-size: 13px
+            }
+
+            td,
+            th {
+                padding: 8px
+            }
+
+            .hint {
+                display: none
+            }
+
+            header {
+                flex-wrap: wrap
+            }
+
+            main {
+                padding: 22px 5vw
+            }
+
+            footer {
+                gap: 8px
+            }
+
+            button {
+                padding: 10px
+            }
+        }
+
+        @media print {
+            body {
+                background: white;
+                color: black;
+                font-size: 12pt
+            }
+
+            header,
+            footer,
+            #bar {
+                display: none
+            }
+
+            .slide {
+                display: block !important;
+                break-after: page
+            }
+
+            main {
+                padding: 0;
+                max-width: none
+            }
+
+            h1,
+            h3,
+            .eyebrow {
+                color: #17365d
+            }
+
+            pre,
+            .card,
+            .callout,
+            .warn,
+            details,
+            fieldset {
+                background: #f3f5f7;
+                color: black;
+                border-color: #aaa
+            }
+
+            pre {
+                font-size: 10pt;
+                white-space: pre-wrap
+            }
+
+            details>* {
+                display: block
+            }
+
+            a {
+                color: #17365d
+            }
+
+            table {
+                font-size: 10pt
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header><span>Računarstvo · C++</span>
+        <button onclick="fullscreen()">Cijeli zaslon</button>
+    </header>
+    <div id="bar"></div>
+    <main>
+        <section class="slide active" aria-label="Slajd 1">
+            <div class="eyebrow">Početak · 01 / 16</div>
+            <h1>Lokalne i globalne varijable</h1>
+            <p class="lead">Gdje smijemo koristiti varijablu i koliko dugo ona postoji?</p>
+            <div class="tags"><span>2. razred</span><span>Tehničar za računarstvo</span><span>Primjeri: C++</span></div>
+            <div class="callout">Doseg = gdje • Životni vijek = kada</div>
+            <p>Objašnjenje, analiza koda, praktični rad i provjera.</p>
+        </section>
+        <section class="slide " aria-label="Slajd 2">
+            <div class="eyebrow">Učenje · 02 / 16</div>
+            <h1>Ishodi učenja</h1>
+            <p>Nakon ove nastavne jedinice moći ćeš:</p>
+            <ul>
+                <li>Razlikovati lokalne i globalne varijable te objasniti njihov doseg i životni vijek u programu.</li>
+                <li>Pravilno koristiti lokalne varijable radi povećanja čitljivosti i sigurnosti programskog koda.</li>
+                <li>Predvidjeti ispis jednostavnog programa i prepoznati uporabu varijable izvan dosega.</li>
+            </ul>
+            <div class="callout">Predznanje: deklaracija, inicijalizacija, funkcije i blokovi { }.</div>
+        </section>
+        <section class="slide " aria-label="Slajd 3">
+            <div class="eyebrow">Učenje · 03 / 16</div>
+            <h1>Dva različita pitanja</h1>
+            <div class="grid">
+                <div class="card">
+                    <h3>Doseg (scope)</h3>
+                    <p>Dio izvornog koda u kojem se određeno ime varijable može koristiti.</p>
+                    <p>Pitanje: <em>Gdje mogu napisati ovo ime?</em></p>
+                </div>
+                <div class="card">
+                    <h3>Životni vijek (lifetime)</h3>
+                    <p>Razdoblje izvođenja tijekom kojeg objekt varijable postoji.</p>
+                    <p>Pitanje: <em>Kada varijabla postoji?</em></p>
+                </div>
+            </div>
+            <div class="callout">Doseg i životni vijek nisu isto. Lokalni doseg ne znači uvijek kratak životni vijek.
+            </div>
+        </section>
+        <section class="slide " aria-label="Slajd 4">
+            <div class="eyebrow">Učenje · 04 / 16</div>
+            <h1>Lokalna varijabla</h1>
+            <pre><code>#include &lt;iostream&gt;
+void prikaziBodove() {
+    int bodovi = 18; // lokalna varijabla
+    std::cout &lt;&lt; bodovi &lt;&lt; &#x27;\n&#x27;;
+}
+int main() {
+    prikaziBodove();
+    // std::cout &lt;&lt; bodovi; // pogreška: izvan dosega
+}</code></pre>
+            <ul>
+                <li>Deklarirana je unutar funkcije ili drugog bloka.</li>
+                <li>U ovom primjeru ime je dostupno od deklaracije do kraja funkcijskog bloka.</li>
+                <li>Obična lokalna varijabla nastaje pri izvršavanju deklaracije, životni vijek završava izlaskom iz
+                    bloka.</li>
+            </ul>
+        </section>
+        <section class="slide " aria-label="Slajd 5">
+            <div class="eyebrow">Učenje · 05 / 16</div>
+            <h1>Blok unutar bloka</h1>
+            <pre><code>int main() {
+    int broj = 5;
+    if (broj &gt; 0) {
+        int dvostruko = broj * 2;
+        std::cout &lt;&lt; dvostruko; // 10
+    }
+    std::cout &lt;&lt; broj; // 5
+    // std::cout &lt;&lt; dvostruko; // pogreška
+}</code></pre>
+            <div class="callout">Unutarnji blok može koristiti varijable iz vanjskog bloka. Ako deklarira vlastitu
+                varijablu istog imena, ona skriva vanjsku varijablu — to nazivamo zasjenjivanje (shadowing). Varijable
+                deklarirane u unutarnjem bloku nisu dostupne izvan tog bloka.</div>
+            <p>U ovom i kraćim primjerima pretpostavljamo uključen &lt;iostream&gt;.</p>
+        </section>
+        <section class="slide " aria-label="Slajd 6">
+            <div class="eyebrow">Učenje · 06 / 16</div>
+            <h1>Svaki poziv, nova varijabla</h1>
+            <pre><code>void broji() {
+    int brojac = 0;
+    brojac++;
+    std::cout &lt;&lt; brojac &lt;&lt; &quot; &quot;;
+}
+int main() {
+    broji();
+    broji();
+    broji();
+}</code></pre>
+            <details>
+                <summary>Predvidi ispis pa otvori odgovor</summary>
+                <p>Ispis: <strong>1 1 1</strong>. Svaki poziv stvara novu običnu lokalnu varijablu i inicijalizira je na
+                    0. Prethodna je prestala postojati.</p>
+            </details>
+        </section>
+        <section class="slide " aria-label="Slajd 7">
+            <div class="eyebrow">Učenje · 07 / 16</div>
+            <h1>Globalna varijabla</h1>
+            <pre><code>int ukupno = 0; // izvan svih funkcija
+void dodajBodove() {
+    ukupno += 5;
+}
+int main() {
+    dodajBodove();
+    dodajBodove();
+    std::cout &lt;&lt; ukupno; // 10
+}</code></pre>
+            <ul>
+                <li>U primjeru je deklarirana u globalnom prostoru imena.</li>
+                <li>Funkcije nakon deklaracije mogu koristiti njezino ime ako nije zasjenjena (shadowing).</li>
+                <li>Ova globalna varijabla tipa int postoji tijekom izvođenja programa.</li>
+            </ul>
+            <p class="note">„Globalna” ne znači automatski vidljiva u svakoj datoteci: za više izvornih datoteka
+                potrebne su odgovarajuće deklaracije i pravila povezivanja.</p>
+        </section>
+        <section class="slide " aria-label="Slajd 8">
+            <div class="eyebrow">Učenje · 08 / 16</div>
+            <h1>Lokalna ili globalna?</h1>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Svojstvo</th>
+                        <th>Obična lokalna</th>
+                        <th>Globalna u primjerima</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Mjesto deklaracije</td>
+                        <td>Unutar bloka</td>
+                        <td>Izvan funkcija, u globalnom prostoru imena</td>
+                    </tr>
+                    <tr>
+                        <td>Doseg imena</td>
+                        <td>Od deklaracije do kraja bloka, uz pravila zasjenjivanja (shadowing)</td>
+                        <td>Nakon deklaracije, uz pravila vidljivosti</td>
+                    </tr>
+                    <tr>
+                        <td>Životni vijek</td>
+                        <td>Od inicijalizacije do izlaska iz bloka</td>
+                        <td>Tijekom izvođenja programa za prikazane int varijable</td>
+                    </tr>
+                    <tr>
+                        <td>Novi poziv funkcije</td>
+                        <td>Nova varijabla</td>
+                        <td>Ista zajednička varijabla</td>
+                    </tr>
+                    <tr>
+                        <td>Tipična namjena</td>
+                        <td>Privremeni izračuni</td>
+                        <td>Zajedničko stanje, samo kada je opravdano</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+        <section class="slide " aria-label="Slajd 9">
+            <div class="eyebrow">Učenje · 09 / 16</div>
+            <h1>Isto ime, različite varijable</h1>
+            <pre><code>int bodovi = 10;
+int main() {
+    int bodovi = 3;
+    std::cout &lt;&lt; bodovi &lt;&lt; &quot; &quot;;
+    std::cout &lt;&lt; ::bodovi;
+}</code></pre>
+            <details>
+                <summary>Koji je ispis?</summary>
+                <p>Ispis je <strong>3 10</strong>. Lokalno ime zasjenjuje globalno. Operator :: ovdje izričito odabire
+                    globalno ime.</p>
+            </details>
+            <div class="callout">Za čitljiviji kod izbjegavaj nepotrebno ponavljanje istih imena u ugniježđenim
+                dosezima.</div>
+        </section>
+        <section class="slide " aria-label="Slajd 10">
+            <div class="eyebrow">Za znatiželjne · 10 / 16</div>
+            <h1>Iznimka: lokalna static varijabla</h1>
+            <pre><code>void broji() {
+    static int brojac = 0;
+    brojac++;
+    std::cout &lt;&lt; brojac &lt;&lt; &quot; &quot;;
+}
+// Tri poziva funkcije broji() ispisuju: 1 2 3</code></pre>
+            <ul>
+                <li>Doseg imena ostaje lokalni: brojac nije dostupan izvan funkcije.</li>
+                <li>Varijabla zadržava vrijednost između poziva.</li>
+                <li>Za ovaj int primjer životni vijek traje od inicijalizacije do završetka programa.</li>
+            </ul>
+            <div class="callout">Dodatak: lokalno / globalno opisuje doseg, a automatsko / statičko opisuje trajanje pohrane.
+            </div>
+        </section>
+        <section class="slide " aria-label="Slajd 11">
+            <div class="eyebrow">Učenje · 11 / 16</div>
+            <h1>Zašto dati prednost lokalnim?</h1>
+            <div class="grid">
+                <div class="card">
+                    <h3>Čitljivost</h3>
+                    <p>Deklaracija je blizu mjesta uporabe. Lakše pratimo odakle vrijednost dolazi.</p>
+                </div>
+                <div class="card">
+                    <h3>Manje neželjenih promjena</h3>
+                    <p>Funkcija izvan dosega ne može izravno pristupiti toj varijabli po imenu.</p>
+                </div>
+                <div class="card">
+                    <h3>Lakše testiranje</h3>
+                    <p>Ulaz preko parametara i izlaz preko povratne vrijednosti smanjuju ovisnost o zajedničkom stanju.
+                    </p>
+                </div>
+                <div class="card">
+                    <h3>Praktična pravila</h3>
+                    <p>Inicijaliziraj varijablu, koristi smisleno ime i deklariraj je u najmanjem potrebnom dosegu.</p>
+                </div>
+            </div>
+            <p class="note">Sigurnost ovdje znači manje programskih pogrešaka, ne potpunu zaštitu programa.</p>
+        </section>
+        <section class="slide " aria-label="Slajd 12">
+            <div class="eyebrow">Učenje · 12 / 16</div>
+            <h1>Popravi ovisnost o globalnim</h1>
+            <div class="grid">
+                <div class="card">
+                    <h3>Prije: skrivena ovisnost</h3>
+                    <pre><code>int a = 4;
+int b = 7;
+int rezultat = 0;
+void zbroji() {
+    rezultat = a + b;
+}</code></pre>
+                </div>
+                <div class="card">
+                    <h3>Poslije: jasan ulaz i izlaz</h3>
+                    <pre><code>int zbroji(int a, int b) {
+    int rezultat = a + b;
+    return rezultat;
+}
+int main() {
+    int zbroj = zbroji(4, 7);
+    std::cout &lt;&lt; zbroj; // 11
+}</code></pre>
+                </div>
+            </div>
+            <p>Parametri a i b lokalni su funkciji. Rezultat vraćamo pozivatelju umjesto promjene globalnog stanja.</p>
+        </section>
+        <section class="slide " aria-label="Slajd 13">
+            <div class="eyebrow">Vježba · 13 / 16</div>
+            <h1>Praktični zadatak</h1>
+            <p>Napiši program za izračun prosjeka dviju ocjena.</p>
+            <ol>
+                <li>U main() deklariraj i učitaj dvije lokalne varijable tipa int.</li>
+                <li>Napiši funkciju double prosjek(int prva, int druga).</li>
+                <li>U funkciji koristi lokalnu varijablu rezultat i vrati je s return.</li>
+                <li>Ispiši povratnu vrijednost. Ne koristi globalne varijable.</li>
+                <li>Testiraj ocjene 3 i 4: očekivani rezultat je 3.5.</li>
+            </ol>
+            <details>
+                <summary>Prikaži jedno moguće rješenje</summary>
+                <pre><code>double prosjek(int prva, int druga) {
+    double rezultat = (prva + druga) / 2.0;
+    return rezultat;
+}
+int main() {
+    int prvaOcjena = 0;
+    int drugaOcjena = 0;
+    std::cin &gt;&gt; prvaOcjena &gt;&gt; drugaOcjena;
+    std::cout &lt;&lt; prosjek(prvaOcjena, drugaOcjena);
+}</code></pre>
+                <p>Pretpostavljamo ispravan unos ocjena od 1 do 5. Dijeljenje s 2.0 daje realni rezultat.</p>
+            </details>
+        </section>
+        <section class="slide " aria-label="Slajd 14">
+            <div class="eyebrow">Provjera · 14 / 16</div>
+            <h1>Pronađi pogrešku</h1>
+            <pre><code>void pripremi() {
+    int temperatura = 22;
+}
+int main() {
+    pripremi();
+    std::cout &lt;&lt; temperatura;
+}</code></pre>
+            <details>
+                <summary>Objašnjenje i popravak</summary>
+                <p>Ime temperatura nije u dosegu funkcije main(). Program se ne može prevesti. Funkcija može vratiti
+                    vrijednost, a main() je spremiti u vlastitu lokalnu varijablu.</p>
+                <pre><code>int pripremi() {
+    int temperatura = 22;
+    return temperatura;
+}
+int main() {
+    int temperatura = pripremi();
+    std::cout &lt;&lt; temperatura;
+}</code></pre>
+            </details>
+        </section>
+        <section class="slide " aria-label="Slajd 15">
+            <div class="eyebrow">Kviz · 15 / 16</div>
+            <h1>Provjeri svoje znanje</h1>
+            <fieldset data-answer="1" data-explain="Doseg se odnosi na dostupnost imena u izvornom kodu.">
+                <legend>1. Što opisuje doseg varijable?</legend><label><input type="radio" name="q0" value="0"> Vrijeme
+                    izvođenja programa</label><label><input type="radio" name="q0" value="1"> Dio koda u kojem se ime
+                    može koristiti</label><label><input type="radio" name="q0" value="2"> Veličinu varijable u
+                    bajtovima</label>
+                <p class="feedback" aria-live="polite"></p>
+            </fieldset>
+            <fieldset data-answer="0" data-explain="Obična lokalna varijabla ima automatsko trajanje pohrane.">
+                <legend>2. Kada prestaje životni vijek obične lokalne varijable u prikazanim primjerima?</legend>
+                <label><input type="radio" name="q1" value="0"> Izlaskom iz njezina bloka</label><label><input
+                        type="radio" name="q1" value="1"> Tek gašenjem računala</label><label><input type="radio"
+                        name="q1" value="2"> Nakon prvog ispisa</label>
+                <p class="feedback" aria-live="polite"></p>
+            </fieldset>
+            <fieldset data-answer="2" data-explain="Svaki poziv inicijalizira novu lokalnu varijablu.">
+                <legend>3. Tri poziva funkcije s int x = 0; ++x; ispisuju:</legend><label><input type="radio" name="q2"
+                        value="0"> 1 2 3</label><label><input type="radio" name="q2" value="1"> 0 0
+                    0</label><label><input type="radio" name="q2" value="2"> 1 1 1</label>
+                <p class="feedback" aria-live="polite"></p>
+            </fieldset>
+            <fieldset data-answer="1" data-explain="Doseg i životni vijek različita su svojstva.">
+                <legend>4. Koja tvrdnja vrijedi za lokalnu static varijablu?</legend><label><input type="radio"
+                        name="q3" value="0"> Ima globalni doseg</label><label><input type="radio" name="q3" value="1">
+                    Zadržava vrijednost između poziva, ali ima lokalni doseg</label><label><input type="radio" name="q3"
+                        value="2"> Nestaje pri svakom izlasku iz funkcije</label>
+                <p class="feedback" aria-live="polite"></p>
+            </fieldset>
+            <fieldset data-answer="1"
+                data-explain="Povratna vrijednost jasno prikazuje izlaz funkcije bez nepotrebne promjene globalnog stanja.">
+                <legend>5. Koji je prikladniji način prijenosa rezultata iz funkcije?</legend><label><input type="radio"
+                        name="q4" value="0"> Uvijek globalna varijabla</label><label><input type="radio" name="q4"
+                        value="1"> Povratna vrijednost funkcije</label><label><input type="radio" name="q4" value="2">
+                    Varijabla bez inicijalizacije</label>
+                <p class="feedback" aria-live="polite"></p>
+            </fieldset><button onclick="grade()">Provjeri odgovore</button> <span id="score" aria-live="polite"></span>
+        </section>
+        <section class="slide " aria-label="Slajd 16">
+            <div class="eyebrow">Završetak · 16 / 16</div>
+            <h1>Izlazna kartica</h1>
+            <ol>
+                <li>Jednom rečenicom objasni razliku između dosega i životnog vijeka.</li>
+                <li>Navedi po jedan primjer deklaracije lokalne i globalne varijable.</li>
+                <li>Objasni kako uporaba lokalnih varijabli smanjuje mogućnost neželjenih promjena.</li>
+            </ol>
+            <div class="warn">Što ste u prikazanim primjerima mogli napraviti kako bi ste manje koda pisali?</div>
+            <details>
+                <summary>Izvori i napomene</summary>
+                <p>Primjeri su u C++. Osnovno gradivo odnosi se na obične lokalne varijable, static je izdvojen kao
+                    dodatak. Dok su nam funkcije ponavljanje prijašnjeg gradiva.</p>
+                <ul>
+                    <li><a target="_blank" href="https://www.w3schools.com/cpp/cpp_functions.asp">W3Schools: C++ Functions</a></li>
+                    <li><a target="_blank" href="https://www.w3schools.com/cpp/cpp_scope.asp">W3Schools: C++ Variable Scope</a></li>
+                </ul>
+            </details>
+        </section>
+    </main>
+    <footer><button id="prev" onclick="show(current-1)">← Prethodni</button><span id="counter"></span>
+        <button id="next" onclick="show(current+1)">Sljedeći →</button>
+    </footer>
+    <script>let current = 0; const slides = [...document.querySelectorAll('.slide')]; function show(n) { current = Math.max(0, Math.min(slides.length - 1, n)); slides.forEach((s, i) => { s.classList.toggle('active', i === current); s.setAttribute('aria-hidden', i !== current) }); document.getElementById('counter').textContent = (current + 1) + ' / ' + slides.length; document.getElementById('bar').style.width = ((current + 1) / slides.length * 100) + '%'; document.getElementById('prev').disabled = current === 0; document.getElementById('next').disabled = current === slides.length - 1; window.scrollTo(0, 0) } document.addEventListener('keydown', e => { if (['INPUT', 'SELECT', 'TEXTAREA', 'BUTTON', 'SUMMARY'].includes(e.target.tagName)) return; if (e.key === 'ArrowRight') { e.preventDefault(); show(current + 1) } if (e.key === 'ArrowLeft') { e.preventDefault(); show(current - 1) } }); function grade() { let total = 0; document.querySelectorAll('fieldset').forEach(f => { let checked = f.querySelector('input:checked'), p = f.querySelector('.feedback'); let ok = checked && checked.value === f.dataset.answer; if (ok) total++; p.className = 'feedback ' + (ok ? 'ok' : 'bad'); p.textContent = (ok ? 'Točno. ' : checked ? 'Netočno. ' : 'Odgovor nije odabran. ') + f.dataset.explain }); document.getElementById('score').textContent = 'Rezultat: ' + total + ' / 5' } function fullscreen() { if (!document.fullscreenElement) { document.documentElement.requestFullscreen?.() } else { document.exitFullscreen?.() } } show(0);</script>
+</body>
+
+</html>
