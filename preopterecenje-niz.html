@@ -1,0 +1,898 @@
+<!DOCTYPE html>
+<html lang="hr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="slides-format" content="viewport">
+    <title>Preopterećenje funkcija i nizovi · Programiranje 2</title>
+    <style>
+        * {
+            box-sizing: border-box
+        }
+
+        :root {
+            --bg: #f5f9ff;
+            --ink: #10213a;
+            --muted: #405978;
+            --accent: #126687
+        }
+
+        body {
+            margin: 0;
+            color: var(--ink);
+            background: radial-gradient(at 95% 0%, #c9f5ff, transparent 48%), radial-gradient(at 0% 100%, #e5ddff, transparent 50%), var(--bg);
+            font-family: system-ui, -apple-system, Segoe UI, sans-serif;
+            font-size: clamp(17px, 1.65vw, 23px);
+            line-height: 1.55;
+            min-height: 100vh;
+        }
+
+        header {
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 4vw;
+            border-bottom: 1px solid #d8e3ef;
+            gap: 12px
+        }
+
+        header span {
+            font-size: 14px;
+            letter-spacing: 1px
+        }
+
+        button,
+        select {
+            font: inherit;
+            font-size: 16px;
+            border: 1px solid #b4c9dc;
+            border-radius: 10px;
+            background: white;
+            color: var(--ink);
+            padding: 9px 15px;
+            cursor: pointer
+        }
+
+        button:hover {
+            background: #e1f4fc
+        }
+
+        button:disabled {
+            opacity: .4;
+            cursor: default
+        }
+
+        button:focus-visible,
+        a:focus-visible,
+        summary:focus-visible,
+        select:focus-visible {
+            outline: 3px solid #9257de;
+            outline-offset: 3px
+        }
+
+        main {
+            max-width: 1300px;
+            margin: auto;
+            padding: 32px 5vw 110px
+        }
+
+        .slide {
+            display: none;
+            animation: enter .25s ease
+        }
+
+        .slide.active {
+            display: block
+        }
+
+        h1 {
+            font-size: clamp(34px, 4.1vw, 64px);
+            line-height: 1.12;
+            letter-spacing: -1.7px;
+            margin: 14px 0 28px;
+            font-family: Georgia, serif;
+            font-weight: normal
+        }
+
+        h3 {
+            font-size: 1.05em;
+            margin-bottom: 10px
+        }
+
+        .tag {
+            font-size: 13px;
+            letter-spacing: 2px;
+            color: var(--accent)
+        }
+
+        .lead {
+            font-size: 1.35em;
+            color: #255373
+        }
+
+        p {
+            margin: 15px 0
+        }
+
+        li {
+            margin: 12px 0
+        }
+
+        pre {
+            background: #122139;
+            color: #e4f4ff;
+            padding: 23px;
+            border-radius: 17px;
+            overflow-x: auto;
+            line-height: 1.5;
+            font-size: clamp(15px, 1.45vw, 20px);
+            tab-size: 4
+        }
+
+        code {
+            font-family: Consolas, ui-monospace, monospace
+        }
+
+        p code,
+        li code,
+        .note code {
+            background: #e5edf7;
+            border-radius: 4px;
+            padding: 1px 4px;
+            color: #124a69
+        }
+
+        .note {
+            border-left: 5px solid #60c9e0;
+            background: #ffffffc9;
+            border-radius: 0 16px 16px 0;
+            padding: 19px 23px;
+            margin: 23px 0
+        }
+
+        .cols {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 28px
+        }
+
+        .chips {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin: 30px 0
+        }
+
+        .chips span {
+            border: 1px solid #bbd3e5;
+            background: #fff9;
+            padding: 8px 20px;
+            border-radius: 30px
+        }
+
+        .array {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin: 25px 0
+        }
+
+        .array>div {
+            background: white;
+            border: 2px solid #c7d9ec;
+            border-radius: 14px;
+            min-width: 100px;
+            text-align: center;
+            padding: 10px 18px
+        }
+
+        .array small {
+            display: block;
+            color: var(--muted);
+            font-size: 14px
+        }
+
+        .array span {
+            font-size: 32px
+        }
+
+        .array .current {
+            border-color: #126687;
+            background: #c9f5ff
+        }
+
+        .array .done {
+            background: #e1ebf6
+        }
+
+        details {
+            background: #fff9;
+            border: 1px solid #cbd9ec;
+            border-radius: 12px;
+            padding: 15px 20px;
+            margin: 18px 0
+        }
+
+        summary {
+            cursor: pointer;
+            color: #126687
+        }
+
+        footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #f5f9fff5;
+            backdrop-filter: blur(10px);
+            border-top: 1px solid #ccdbea;
+            padding: 12px 4vw;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            z-index: 2
+        }
+
+        #counter {
+            margin-left: auto;
+            font-size: 16px;
+            white-space: nowrap
+        }
+
+        #progress {
+            height: 4px;
+            background: #53bbd4;
+            position: absolute;
+            top: -4px;
+            left: 0;
+            transition: width .2s
+        }
+
+        select {
+            max-width: 42vw
+        }
+
+        .actions {
+            display: flex;
+            gap: 10px
+        }
+
+        fieldset {
+            border: 1px solid #c2d6e8;
+            border-radius: 12px;
+            margin: 18px 0;
+            padding: 14px 20px;
+            background: #fff8
+        }
+
+        legend {
+            font-size: 19px;
+            padding: 0 8px
+        }
+
+        label {
+            display: block;
+            font-size: 18px;
+            margin: 9px 0;
+            cursor: pointer
+        }
+
+        input {
+            accent-color: #126687
+        }
+
+        .feedback {
+            font-size: 17px
+        }
+
+        a {
+            color: #126687
+        }
+
+        .hint {
+            font-size: 13px;
+            color: var(--muted)
+        }
+
+        @keyframes enter {
+            from {
+                opacity: 0;
+                transform: translateY(8px)
+            }
+
+            to {
+                opacity: 1;
+                transform: none
+            }
+        }
+
+        body.overview .slide {
+            display: block;
+            border-bottom: 2px solid #c2d6e8;
+            padding: 35px 0
+        }
+
+        body.overview main {
+            max-width: 1100px
+        }
+
+        @media(max-width:720px) {
+            .cols {
+                grid-template-columns: 1fr;
+                gap: 5px
+            }
+
+            header {
+                padding: 10px 5vw
+            }
+
+            header span {
+                font-size: 11px
+            }
+
+            .hint {
+                display: none
+            }
+
+            footer {
+                gap: 7px;
+                padding: 10px
+            }
+
+            footer button {
+                padding: 9px
+            }
+
+            select {
+                max-width: 33vw
+            }
+
+            main {
+                padding-top: 22px
+            }
+
+            h1 {
+                letter-spacing: -.8px
+            }
+
+            .array>div {
+                min-width: 65px;
+                padding: 8px
+            }
+
+            .array {
+                gap: 6px
+            }
+        }
+
+        @media(prefers-reduced-motion:reduce) {
+            * {
+                animation: none !important;
+                transition: none !important
+            }
+        }
+
+        @media print {
+            body {
+                background: white;
+                font-size: 12pt
+            }
+
+            header,
+            footer,
+            .actions,
+            #quiz button {
+                display: none !important
+            }
+
+            main {
+                padding: 0;
+                max-width: none
+            }
+
+            .slide,
+            .slide.active {
+                display: block;
+                break-after: page;
+                padding: 10mm 0
+            }
+
+            h1 {
+                font-size: 27pt
+            }
+
+            pre {
+                font-size: 10pt;
+                white-space: pre-wrap;
+                background: #edf2f7;
+                color: #10213a;
+                border: 1px solid #ccd
+            }
+
+            details {
+                display: block
+            }
+
+            details:not([open])>*:not(summary) {
+                display: block
+            }
+
+            a {
+                color: inherit
+            }
+
+            .note {
+                background: #f2f6fa
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header><span>PROGRAMIRANJE / 2. RAZRED / C++</span>
+        <div><button id="overview" aria-pressed="false">Sve stranice</button> <button id="fullscreen">Cijeli
+                zaslon</button></div>
+    </header>
+    <main>
+        <section class="slide active" id="s1" aria-labelledby="t1">
+            <div class="tag">C++ · PROGRAMIRANJE 2 · 01</div>
+            <h1 id="t1">Jedno ime. Više mogućnosti.</h1>
+            <p class="lead">Preopterećenje funkcija i prosljeđivanje nizova u funkciju</p>
+            <p>Programiranje · 2. razred srednje škole</p>
+            <div class="chips"><span>C++</span><span>Primjeri</span><span>Vježbe</span><span>Kviz</span></div>
+            <div class="note">Polazište: poznajemo varijable, tipove podataka, petlje, funkcije i
+                jednodimenzionalne nizove.</div>
+        </section>
+        <section class="slide" id="s2" aria-labelledby="t2">
+            <div class="tag">C++ · PROGRAMIRANJE 2 · 02</div>
+            <h1 id="t2">Što ćemo znati nakon sata?</h1>
+            <ul>
+                <li>Objasniti što je preopterećenje funkcije.</li>
+                <li>Napisati funkcije istog imena s različitim parametrima.</li>
+                <li>Odrediti koju funkciju poziv odabire.</li>
+                <li>Proslijediti niz i njegov broj elemenata u funkciju.</li>
+                <li>Razlikovati čitanje niza od promjene njegovih elemenata.</li>
+            </ul>
+        </section>
+        <section class="slide" id="s3" aria-labelledby="t3">
+            <div class="tag">C++ · PROGRAMIRANJE 2 · 03</div>
+            <h1 id="t3">Podsjetnik: kako radi funkcija?</h1>
+            <pre><code>int zbroji(int a, int b) {
+    return a + b;
+}
+
+int rezultat = zbroji(3, 5); // rezultat je 8</code></pre>
+            <ul>
+                <li><code>int</code> prije imena: tip povratne vrijednosti.</li>
+                <li><code>a</code> i <code>b</code>: parametri u definiciji funkcije.</li>
+                <li><code>3</code> i <code>5</code>: argumenti u pozivu.</li>
+                <li><code>return</code>: vraća rezultat pozivatelju.</li>
+            </ul>
+            <div class="note">Pitanje za uvod: kako bismo istim imenom zbrajali i decimalne brojeve?</div>
+        </section>
+        <section class="slide" id="s4" aria-labelledby="t4">
+            <div class="tag">C++ · PROGRAMIRANJE 2 · 04</div>
+            <h1 id="t4">Preopterećenje: isto ime, drugi parametri</h1>
+            <p class="lead">Više funkcija u istom dosegu može imati isto ime ako se njihovi popisi parametara razlikuju.
+            </p>
+            <pre><code>int zbroji(int a, int b) {
+    return a + b;
+}
+
+double zbroji(double a, double b) {
+    return a + b;
+}</code></pre>
+            <div class="note">Prevoditelj pri prevođenju odabire odgovarajuću funkciju prema argumentima poziva. U
+                jednostavnim primjerima tražimo potpuno podudaranje tipova.</div>
+        </section>
+        <section class="slide" id="s5" aria-labelledby="t5">
+            <div class="tag">C++ · PROGRAMIRANJE 2 · 05</div>
+            <h1 id="t5">Po čemu se funkcije mogu razlikovati?</h1>
+            <div class="cols">
+                <div>
+                    <h3>Broj parametara</h3>
+                    <pre><code>int zbroji(int a, int b);
+int zbroji(int a, int b, int c);</code></pre>
+                    <h3>Tipovi parametara</h3>
+                    <pre><code>int zbroji(int a, int b);
+double zbroji(double a, double b);</code></pre>
+                </div>
+                <div>
+                    <h3>Redoslijed različitih tipova</h3>
+                    <pre><code>void prikazi(int broj, double cijena);
+void prikazi(double cijena, int broj);</code></pre>
+                    <h3>&nbsp;</h3>
+                    <div class="note">Svaki poziv i dalje mora imati jedno najbolje podudaranje. Samo promjena imena
+                        parametra ne stvara novu funkciju.</div>
+                </div>
+            </div>
+        </section>
+        <section class="slide" id="s6" aria-labelledby="t6">
+            <div class="tag">C++ · PROGRAMIRANJE 2 · 06</div>
+            <h1 id="t6">Što nije preopterećenje?</h1>
+            <div class="cols">
+                <div>
+                    <pre><code>int izracunaj(int x);
+double izracunaj(int x); // POGREŠNO</code></pre>
+                    <p>Razlika samo u povratnom tipu nije dovoljna.</p>
+                </div>
+                <div>
+                    <pre><code>int izracunaj(int x);
+int izracunaj(int broj); // ista funkcija</code></pre>
+                    <p>Različita imena parametara ne mijenjaju njihove tipove.</p>
+                </div>
+            </div>
+            <div class="note">Zapamti: za ove funkcije promatramo ime i popis tipova parametara, a ne naziv
+                parametra ili željeni tip rezultata.</div>
+        </section>
+        <section class="slide" id="s7" aria-labelledby="t7">
+            <div class="tag">C++ · PROGRAMIRANJE 2 · 07</div>
+            <h1 id="t7">Prati pozive i predvidi rezultat</h1>
+            <pre><code>int zbroji(int a, int b) { return a + b; }
+double zbroji(double a, double b) { return a + b; }
+int zbroji(int a, int b, int c) { return a + b + c; }
+
+// Koja se inačica poziva?
+zbroji(4, 7);
+zbroji(2.5, 1.2);
+zbroji(1, 2, 3);</code></pre>
+            <details>
+                <summary>Prikaži objašnjenje</summary>
+                <ol>
+                    <li>Dva parametra <code>int</code> → rezultat 11.</li>
+                    <li>Dva parametra <code>double</code> → rezultat 3.7.</li>
+                    <li>Tri parametra <code>int</code> → rezultat 6.</li>
+                </ol>
+            </details>
+        </section>
+        <section class="slide" id="s8" aria-labelledby="t8">
+            <div class="tag">C++ · PROGRAMIRANJE 2 · 08</div>
+            <h1 id="t8">Zamka: dvosmislen poziv</h1>
+            <pre><code>int zbroji(int a, int b);
+double zbroji(double a, double b);
+
+zbroji(2, 3.5); // pogreška: dvosmislen poziv</code></pre>
+            <p>Prva inačica traži pretvorbu drugog argumenta u <code>int</code>. Druga traži pretvorbu prvog argumenta u
+                <code>double</code>. Nijedna nije bolja za oba argumenta.
+            </p>
+            <pre><code>zbroji(2.0, 3.5); // jasno: double, double</code></pre>
+            <div class="note">Najprije razmisli želiš li računati cijelim ili decimalnim brojevima. Ne pretvaraj podatke
+                u cijele brojeve samo da ukloniš pogrešku.</div>
+        </section>
+        <section class="slide" id="s9" aria-labelledby="t9">
+            <div class="tag">C++ · PROGRAMIRANJE 2 · 09</div>
+            <h1 id="t9">Vježba 1: preoptereti funkciju</h1>
+            <p>Napiši dvije funkcije <code>veci</code>: prvu za dva cijela broja, drugu za dva decimalna broja. Svaka
+                vraća veći broj.</p>
+            <pre><code>// Dopuni definicije:
+int veci(int a, int b) { /* ... */ }
+double veci(double a, double b) { /* ... */ }
+
+// Očekivano: 9 i 4.8
+// veci(4, 9)
+// veci(2.3, 4.8)</code></pre>
+            <details>
+                <summary>Rješenje</summary>
+                <pre><code>int veci(int a, int b) {
+    if (a &gt; b) return a;
+    return b;
+}
+double veci(double a, double b) {
+    if (a &gt; b) return a;
+    return b;
+}</code></pre>
+            </details>
+        </section>
+        <section class="slide" id="s10" aria-labelledby="t10">
+            <div class="tag">C++ · PROGRAMIRANJE 2 · 10</div>
+            <h1 id="t10">Niz: više vrijednosti pod jednim imenom</h1>
+            <pre><code>int bodovi[5] = {12, 18, 9, 20, 16};</code></pre>
+            <div class="array">
+                <div><small>indeks 0</small><span>12</span></div>
+                <div><small>indeks 1</small><span>18</span></div>
+                <div><small>indeks 2</small><span>9</span></div>
+                <div><small>indeks 3</small><span>20</span></div>
+                <div><small>indeks 4</small><span>16</span></div>
+            </div>
+            <ul>
+                <li>Niz sadrži pet elemenata tipa <code>int</code>.</li>
+                <li>Indeksi počinju od 0: valjani su 0, 1, 2, 3 i 4.</li>
+                <li><code>bodovi[2]</code> ima vrijednost 9.</li>
+            </ul>
+            <div class="note">Cilj: izdvojiti ispis, zbroj ili promjenu elemenata u funkciju koju možemo ponovno
+                koristiti.</div>
+        </section>
+        <section class="slide" id="s11" aria-labelledby="t11">
+            <div class="tag">C++ · PROGRAMIRANJE 2 · 11</div>
+            <h1 id="t11">Kako proslijediti niz?</h1>
+            <pre><code>void ispisi(const int niz[], int n) {
+    for (int i = 0; i &lt; n; i++) {
+        cout &lt;&lt; niz[i] &lt;&lt; &quot; &quot;;
+    }
+}
+
+// U main funkciji:
+int bodovi[5] = {12, 18, 9, 20, 16};
+ispisi(bodovi, 5);</code></pre>
+            <ul>
+                <li><code>bodovi</code>: ime niza bez uglatih zagrada pri pozivu.</li>
+                <li><code>niz</code>: ime parametra kojim funkcija pristupa elementima.</li>
+                <li><code>n</code>: broj elemenata koje funkcija smije obraditi.</li>
+                <li><code>const</code>: elementi se ne smiju mijenjati kroz taj parametar.</li>
+            </ul>
+        </section>
+        <section class="slide" id="s12" aria-labelledby="t12">
+            <div class="tag">C++ · PROGRAMIRANJE 2 · 12</div>
+            <h1 id="t12">Što se zapravo prosljeđuje?</h1>
+            <p class="lead">Kod ovog oblika parametra ne kopira se cijeli niz.</p>
+            <pre><code>void obradi(int niz[], int n);
+// Isti tip parametra kao:
+void obradi(int* niz, int n);</code></pre>
+            <p>Izraz koji označava niz pri ovakvom pozivu pretvara se u pokazivač na prvi element. Pokazivač se prenosi
+                po vrijednosti, a preko njega funkcija pristupa izvornim elementima.</p>
+            <div class="note">U ovoj lekciji koristimo školski oblik
+                <code>tip niz[], int n</code>. Broj elemenata predajemo zasebno.
+            </div>
+            <p>Veza: <code>bodovi</code> → prvi element → <code>niz[0]</code>, <code>niz[1]</code>, …</p>
+        </section>
+        <section class="slide" id="s13" aria-labelledby="t13">
+            <div class="tag">C++ · PROGRAMIRANJE 2 · 13</div>
+            <h1 id="t13">Primjer: zbroj svih elemenata</h1>
+            <pre><code>int zbrojNiza(const int niz[], int n) {
+    int zbroj = 0;
+    for (int i = 0; i &lt; n; i++) {
+        zbroj += niz[i];
+    }
+    return zbroj;
+}
+
+int bodovi[5] = {12, 18, 9, 20, 16};
+int ukupno = zbrojNiza(bodovi, 5); // 75</code></pre>
+            <div class="note">Funkcija: n je nenegativan i ne prelazi broj dostupnih elemenata, zbroj mora stati
+                u tip int. Za n = 0 petlja se ne izvršava, a rezultat je 0.</div>
+        </section>
+        <section class="slide" id="s14" aria-labelledby="t14">
+            <div class="tag">C++ · PROGRAMIRANJE 2 · 14</div>
+            <h1 id="t14">Prati zbroj korak po korak</h1>
+            <p>Simulacija petlje za niz <code>{12, 18, 9, 20, 16}</code>. Ovo je prikaz algoritma u pregledniku, a ne
+                izvršavanje C++ koda.</p>
+            <div id="traceArray" class="array"></div>
+            <div class="note" id="traceStatus" aria-live="polite"></div>
+            <div class="actions"><button type="button" id="traceNext">Sljedeći korak</button><button type="button"
+                    id="traceReset">Ponovno</button></div>
+            <pre><code>zbroj = 0;
+for (int i = 0; i &lt; n; i++) {
+    zbroj += niz[i];
+}</code></pre>
+        </section>
+        <section class="slide" id="s15" aria-labelledby="t15">
+            <div class="tag">C++ · PROGRAMIRANJE 2 · 15</div>
+            <h1 id="t15">Promjena elemenata mijenja izvorni niz</h1>
+            <pre><code>void povecaj(int niz[], int n) {
+    for (int i = 0; i &lt; n; i++) {
+        niz[i] += 1;
+    }
+}
+
+int brojevi[3] = {2, 4, 6};
+povecaj(brojevi, 3);
+// brojevi sada sadrži {3, 5, 7}</code></pre>
+            <div class="note">Bez const funkcija može mijenjati izvorne elemente. S const parametrom pokušaj
+                <code>niz[i] += 1;</code> bio bi pogreška pri prevođenju.
+            </div>
+            <p>Usporedi: promjena lokalnog parametra <code>n</code> ne mijenja varijablu predanu kao broj elemenata.</p>
+        </section>
+        <section class="slide" id="s16" aria-labelledby="t16">
+            <div class="tag">C++ · PROGRAMIRANJE 2 · 16</div>
+            <h1 id="t16">Tri česte pogreške s nizovima</h1>
+            <ol>
+                <li>
+                    <h3>Izlazak izvan granica</h3><code>i &lt;= n</code> je pogrešno za obradu n elemenata. Koristi
+                    <code>i &lt; n</code>.
+                </li>
+                <li>
+                    <h3>Pogrešan broj elemenata</h3>Poziv s većim brojem od dostupnih elemenata može dovesti do
+                    nedefiniranog ponašanja. Nema automatske provjere granica.
+                </li>
+                <li>
+                    <h3>Traženje duljine pomoću sizeof unutar funkcije</h3>U parametru <code>int niz[]</code> tip se
+                    prilagođava u <code>int*</code> <code>sizeof(niz)</code> zato daje veličinu pokazivača, ne izvornog
+                    niza.
+                </li>
+            </ol>
+            <div class="note">Ni zapis <code>void f(int niz[5])</code> ne nameće duljinu 5 niti stvara preopterećenje
+                različito od <code>void f(int niz[10])</code>.</div>
+        </section>
+        <section class="slide" id="s17" aria-labelledby="t17">
+            <div class="tag">C++ · PROGRAMIRANJE 2 · 17</div>
+            <h1 id="t17">Povežimo teme: ispis različitih nizova</h1>
+            <pre><code>void ispisi(const int niz[], int n) {
+    for (int i = 0; i &lt; n; i++)
+        cout &lt;&lt; niz[i] &lt;&lt; &quot; &quot;;
+        cout &lt;&lt; &#x27;\n&#x27;;
+}
+
+void ispisi(const double niz[], int n) {
+    for (int i = 0; i &lt; n; i++)
+        cout &lt;&lt; niz[i] &lt;&lt; &quot; &quot;;
+        cout &lt;&lt; &#x27;\n&#x27;;
+}</code></pre>
+            <div class="note">Ime i broj parametara su isti, ali se razlikuje tip elemenata niza:
+                <code>const int*</code> nasuprot <code>const double*</code>. To je valjano preopterećenje.
+            </div>
+        </section>
+        <section class="slide" id="s18" aria-labelledby="t18">
+            <div class="tag">C++ · PROGRAMIRANJE 2 · 18</div>
+            <h1 id="t18">Cjelovit program za isprobavanje</h1>
+            <pre><code>
+void ispisi(const int niz[], int n) {
+    for (int i = 0; i &lt; n; i++)
+        cout &lt;&lt; niz[i] &lt;&lt; &quot; &quot;;
+        cout &lt;&lt; &#x27;\n&#x27;;
+}
+
+void ispisi(const double niz[], int n) {
+    for (int i = 0; i &lt; n; i++)
+        cout &lt;&lt; niz[i] &lt;&lt; &quot; &quot;;
+        cout &lt;&lt; &#x27;\n&#x27;;
+}
+
+int main() {
+    int bodovi[4] = {10, 15, 18, 20};
+    double temperature[3] = {21.5, 22.3, 20.8};
+
+    ispisi(bodovi, 4);
+    ispisi(temperature, 3);
+    return 0;
+}</code></pre>
+            <p>Očekivani ispis:</p>
+            <pre><code>10 15 18 20
+21.5 22.3 20.8</code></pre>
+        </section>
+        <section class="slide" id="s19" aria-labelledby="t19">
+            <div class="tag">C++ · PROGRAMIRANJE 2 · 19</div>
+            <h1 id="t19">Vježba 2: analiziraj rezultate</h1>
+            <p>Napiši funkciju koja vraća broj elemenata niza većih od zadane granice.</p>
+            <pre><code>int brojVecih(const int niz[], int n, int granica);
+
+// Za {10, 15, 18, 20} i granicu 15 rezultat je 2.
+// Usporedba je strogo &gt;, a ne &gt;=.</code></pre>
+            <details>
+                <summary>Rješenje</summary>
+                <pre><code>int brojVecih(const int niz[], int n, int granica) {
+    int broj = 0;
+    for (int i = 0; i &lt; n; i++) {
+        if (niz[i] &gt; granica) broj++;
+    }
+    return broj;
+}</code></pre>
+            </details>
+            <div class="note">Provjeri tri slučaja: nijedan element nije veći, svi su veći i neki su jednaki granici.
+                Pretpostavka: 0 ≤ n ≤ broj dostupnih elemenata.</div>
+        </section>
+        <section class="slide" id="s20" aria-labelledby="t20">
+            <div class="tag">C++ · PROGRAMIRANJE 2 · 20</div>
+            <h1 id="t20">Samostalni rad: dvije inačice, isto ime</h1>
+            <ol>
+                <li>Napiši <code>prebrojiPozitivne(const int niz[], int n)</code>.</li>
+                <li>Preoptereti je za niz tipa <code>double</code>.</li>
+                <li>U <code>main</code> pozovi obje inačice.</li>
+                <li>Objasni zašto je <code>const</code> dobar izbor.</li>
+            </ol>
+            <pre><code>int a[5] = {-2, 0, 5, 8, -1};       // rezultat: 2
+double b[4] = {0.5, -1.2, 0.0, 3.4}; // rezultat: 2</code></pre>
+            <details>
+                <summary>Rješenje funkcija</summary>
+                <pre><code>int prebrojiPozitivne(const int niz[], int n) {
+    int broj = 0;
+    for (int i = 0; i &lt; n; i++)
+        if (niz[i] &gt; 0) broj++;
+    return broj;
+}
+int prebrojiPozitivne(const double niz[], int n) {
+    int broj = 0;
+    for (int i = 0; i &lt; n; i++)
+        if (niz[i] &gt; 0) broj++;
+    return broj;
+}</code></pre>
+            </details>
+        </section>
+        <section class="slide" id="s21" aria-labelledby="t21">
+            <div class="tag">C++ · PROGRAMIRANJE 2 · 21</div>
+            <h1 id="t21">Brza provjera razumijevanja</h1>
+            <form id="quiz">
+                <fieldset data-correct="1" data-explain="Različit broj parametara razlikuje popise parametara.">
+                    <legend>1. Što je dovoljno za valjano preopterećenje?</legend><label><input type="radio" name="q0"
+                            value="0"> Druga imena parametara</label><label><input type="radio" name="q0" value="1">
+                        Različit broj parametara</label><label><input type="radio" name="q0" value="2"> Samo drugi
+                        povratni tip</label>
+                    <p class="feedback" aria-live="polite"></p>
+                </fieldset>
+                <fieldset data-correct="2" data-explain="Predajemo ime niza i broj dostupnih elemenata.">
+                    <legend>2. Kako se poziva void ispisi(const int niz[], int n) za int a[4]?</legend><label><input
+                            type="radio" name="q1" value="0"> ispisi(a[], 4);</label><label><input type="radio"
+                            name="q1" value="1"> ispisi(a[4], 4);</label><label><input type="radio" name="q1" value="2">
+                        ispisi(a, 4);</label>
+                    <p class="feedback" aria-live="polite"></p>
+                </fieldset>
+                <fieldset data-correct="0" data-explain="Funkcija preko pokazivača pristupa izvornom elementu.">
+                    <legend>3. Što se događa ako funkcija s parametrom int niz[] promijeni niz[0]?</legend><label><input
+                            type="radio" name="q2" value="0"> Mijenja se izvorni element</label><label><input
+                            type="radio" name="q2" value="1"> Mijenja se samo kopija niza</label><label><input
+                            type="radio" name="q2" value="2"> Uvijek nastaje pogreška</label>
+                    <p class="feedback" aria-live="polite"></p>
+                </fieldset>
+                <fieldset data-correct="1" data-explain="Indeksi počinju od nule.">
+                    <legend>4. Koji je posljednji valjani indeks niza s n elemenata, za n > 0?</legend><label><input
+                            type="radio" name="q3" value="0"> n</label><label><input type="radio" name="q3" value="1"> n
+                        - 1</label><label><input type="radio" name="q3" value="2"> n + 1</label>
+                    <p class="feedback" aria-live="polite"></p>
+                </fieldset>
+                <fieldset data-correct="2" data-explain="const ne prenosi duljinu i ne stvara kopiju niza.">
+                    <legend>5. Što jamči const int niz[] unutar funkcije?</legend><label><input type="radio" name="q4"
+                            value="0"> Funkcija automatski zna duljinu</label><label><input type="radio" name="q4"
+                            value="1"> Niz se kopira</label><label><input type="radio" name="q4" value="2"> Elementi se
+                        ne mijenjaju kroz taj parametar</label>
+                    <p class="feedback" aria-live="polite"></p>
+                </fieldset><button type="submit">Provjeri odgovore</button>
+                <p id="score" aria-live="polite"></p>
+            </form>
+        </section>
+        <section class="slide" id="s22" aria-labelledby="t22">
+            <div class="tag">C++ · PROGRAMIRANJE 2 · 22</div>
+            <h1 id="t22">Sažetak</h1>
+            <ul>
+                <li>Preopterećenje znači isto ime funkcije, ali različite popise parametara.</li>
+                <li>Samo drukčiji povratni tip nije dovoljan.</li>
+                <li>Prevoditelj bira najbolje podudaranje, dvosmislen poziv je pogreška.</li>
+                <li>U obliku <code>tip niz[]</code> parametar se prilagođava pokazivaču.</li>
+                <li>Broj dostupnih elemenata predajemo zasebnim parametrom.</li>
+                <li>Bez <code>const</code> funkcija može promijeniti izvorne elemente.</li>
+                <li>Za obradu n elemenata koristimo indekse od 0 do n − 1.</li>
+            </ul>
+            <div class="note">Napiši valjan par preopterećenih funkcija i jedan poziv funkcije kojoj
+                predaješ niz. Objasni u jednoj rečenici zašto predaješ i broj elemenata.</div>
+        </section>
+        
+    </main>
+    <footer>
+        <div id="progress"></div><button id="prev" aria-label="Prethodni slajd">←</button><button id="next"
+            aria-label="Sljedeći slajd">→</button><select id="jump" aria-label="Odaberi slajd">
+            <option value="0">1. Jedno ime. Više mogućnosti.</option>
+            <option value="1">2. Što ćemo znati nakon sata?</option>
+            <option value="2">3. Podsjetnik: kako radi funkcija?</option>
+            <option value="3">4. Preopterećenje: isto ime, drugi parametri</option>
+            <option value="4">5. Po čemu se funkcije mogu razlikovati?</option>
+            <option value="5">6. Što nije preopterećenje?</option>
+            <option value="6">7. Prati pozive i predvidi rezultat</option>
+            <option value="7">8. Zamka: dvosmislen poziv</option>
+            <option value="8">9. Vježba 1: preoptereti funkciju</option>
+            <option value="9">10. Niz: više vrijednosti pod jednim imenom</option>
+            <option value="10">11. Kako proslijediti niz?</option>
+            <option value="11">12. Što se zapravo prosljeđuje?</option>
+            <option value="12">13. Primjer: zbroj svih elemenata</option>
+            <option value="13">14. Prati zbroj korak po korak</option>
+            <option value="14">15. Promjena elemenata mijenja izvorni niz</option>
+            <option value="15">16. Tri česte pogreške s nizovima</option>
+            <option value="16">17. Povežimo teme: ispis različitih nizova</option>
+            <option value="17">18. Cjelovit program za isprobavanje</option>
+            <option value="18">19. Vježba 2: analiziraj rezultate</option>
+            <option value="19">20. Samostalni rad: dvije inačice, isto ime</option>
+            <option value="20">21. Brza provjera razumijevanja</option>
+            <option value="21">22. Sažetak za bilježnicu</option>
+        </select><span id="counter" aria-live="polite"></span>
+    </footer>
+    <script>const slides = [...document.querySelectorAll('.slide')], prev = document.querySelector('#prev'), next = document.querySelector('#next'), jump = document.querySelector('#jump'); let index = 0;
+        function show(n) { index = Math.max(0, Math.min(slides.length - 1, n)); slides.forEach((s, i) => { s.classList.toggle('active', i === index) }); jump.value = index; document.querySelector('#counter').textContent = (index + 1) + ' / ' + slides.length; prev.disabled = index === 0; next.disabled = index === slides.length - 1; document.querySelector('#progress').style.width = ((index + 1) / slides.length * 100) + '%'; history.replaceState(null, '', '#' + (index + 1)); if (document.body.classList.contains('overview')) slides[index].scrollIntoView(); else window.scrollTo(0, 0) }
+        prev.onclick = () => show(index - 1); next.onclick = () => show(index + 1); jump.onchange = () => show(+jump.value);
+        document.addEventListener('keydown', e => { if (['INPUT', 'SELECT', 'TEXTAREA', 'BUTTON', 'SUMMARY'].includes(e.target.tagName) || e.altKey || e.ctrlKey || e.metaKey) return; if (e.key === 'ArrowRight' || e.key === 'PageDown') { e.preventDefault(); show(index + 1) } if (e.key === 'ArrowLeft' || e.key === 'PageUp') { e.preventDefault(); show(index - 1) } if (e.key === 'Home') { e.preventDefault(); show(0) } if (e.key === 'End') { e.preventDefault(); show(slides.length - 1) } });
+        document.querySelector('#overview').onclick = () => { const active = document.body.classList.toggle('overview'); document.querySelector('#overview').textContent = active ? 'Slajdovi' : 'Sve stranice'; document.querySelector('#overview').setAttribute('aria-pressed', active); if (!active) show(index) };
+        document.querySelector('#fullscreen').onclick = async () => { try { if (document.fullscreenElement) await document.exitFullscreen(); else await document.documentElement.requestFullscreen() } catch (e) { document.querySelector('#fullscreen').textContent = 'Koristi F11' } };
+        const values = [12, 18, 9, 20, 16]; let step = 0; function trace() { document.querySelector('#traceArray').innerHTML = values.map((v, i) => '<div class="' + (i < step ? 'done' : i === step ? 'current' : '') + '"><small>indeks ' + i + '</small><span>' + v + '</span></div>').join(''); const sum = values.slice(0, step).reduce((a, b) => a + b, 0); document.querySelector('#traceStatus').textContent = step === 0 ? 'Početak: i = 0, zbroj = 0. Sljedeći element je 12.' : step === 5 ? 'Kraj: i = 5; uvjet i < 5 nije ispunjen. Povratna vrijednost: ' + sum + '.' : 'Obrađeno elemenata: ' + step + '. zbroj = ' + sum + '. Sljedeći indeks: ' + step + '.'; document.querySelector('#traceNext').disabled = step === 5 } document.querySelector('#traceNext').onclick = () => { step++; trace() }; document.querySelector('#traceReset').onclick = () => { step = 0; trace() }; trace();
+        document.querySelector('#quiz').onsubmit = e => { e.preventDefault(); let score = 0; document.querySelectorAll('fieldset').forEach(f => { const chosen = f.querySelector('input:checked'), good = chosen && chosen.value === f.dataset.correct; if (good) score++; f.querySelector('.feedback').textContent = (good ? 'Točno. ' : chosen ? 'Netočno. ' : 'Nije odgovoreno. ') + f.dataset.explain; f.querySelector('.feedback').style.color = good ? '#166347' : '#9b2929' }); document.querySelector('#score').textContent = 'Rezultat: ' + score + ' / 5.' };
+        const start = parseInt(location.hash.slice(1), 10); show(Number.isFinite(start) ? start - 1 : 0);</script>
+</body>
+
+</html>
